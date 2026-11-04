@@ -1341,7 +1341,7 @@ a{color:#2f6db5}a:hover{color:#1d4f8a}
 </svg>
 
 <svg width="1392" height="512" viewBox="0 0 1392 512" role="img" aria-label="Distribution of gene-by-gene correlations with expansion, FAN1 marked at the extreme" style="flex: none; font-family: 'IBM Plex Sans', system-ui, sans-serif">
-<text x="0.0" y="24.0" font-size="19" fill="#1d1d1b" font-weight="600">Every gene in the matrix was put through the identical standardization; no gene tracks expansion more closely than FAN1</text>
+<text x="0.0" y="24.0" font-size="19" fill="#1d1d1b" font-weight="600">Every gene in the matrix was standardized; no gene tracks expansion more closely than FAN1</text>
 <text x="0.0" y="46.0" font-size="14" fill="#5c5a55">17,516 genes reaching 1 transcript per million, each correlated with expansion across the same 11 donors. Expansion orders the donors, so any gene varying along that order produces a correlation:</text>
 <text x="0.0" y="70.0" font-size="14" fill="#5c5a55">this is the distribution of what that alone yields.</text>
 <line x1="110.0" y1="330.0" x2="1340.0" y2="330.0" stroke="#e4dfd4"/>
@@ -1407,9 +1407,14 @@ a{color:#2f6db5}a:hover{color:#1d4f8a}
 <text x="172.3" y="122.0" font-size="15" fill="#d9822b" font-weight="700">FAN1,  rho = -0.92</text>
 <text x="172.3" y="144.0" font-size="13" fill="#1d1d1b">rank 1 of 17,516</text>
 <text x="172.3" y="164.0" font-size="13" fill="#1d1d1b">no gene reaches it, and its own bar is one gene tall</text>
+<line x1="1133.1" y1="320.0" x2="1133.1" y2="130.0" stroke="#a3202a" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
+<circle cx="1133.1" cy="330.0" r="5.5" fill="#a3202a" stroke="#fbfaf7" stroke-width="2"/>
+<text x="1121.1" y="122.0" font-size="15" fill="#a3202a" text-anchor="end" font-weight="700">MSH2,  rho = +0.66</text>
+<text x="1121.1" y="144.0" font-size="13" fill="#1d1d1b" text-anchor="end">the partner that opposes FAN1,</text>
+<text x="1121.1" y="164.0" font-size="13" fill="#1d1d1b" text-anchor="end">running the other way</text>
 <text x="0.0" y="410.0" font-size="14" fill="#1d1d1b">Narrowed to the 1,935 genes of FAN1’s own abundance, within a factor of 1.3 either way, none reaches it either. The figure is not what this many donors and this many genes throw up by chance.</text>
 <text x="0.0" y="440.0" font-size="14" fill="#5c5a55">That is a reference point, not a p-value: genes are correlated with one another, so the tail is not 17,516 independent draws.</text>
-<text x="0.0" y="470.0" font-size="13" fill="#5c5a55">MSH2, the partner that opposes FAN1, runs the other way at rho = +0.66 — the direction the mechanism implies, from the opposite side of the balance.</text>
+<text x="0.0" y="470.0" font-size="13" fill="#5c5a55">The direction MSH2 runs is the one the mechanism implies, from the opposite side of the balance.</text>
 <text x="0.0" y="497.0" font-size="13" fill="#5c5a55">Eleven donors allow a correlation only 221 distinct values, 1/110 apart. Each bar holds five of them.</text>
 </svg>
 

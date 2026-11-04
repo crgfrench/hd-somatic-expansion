@@ -32,6 +32,7 @@ TPM = {'cortex':   {'MSH2': 80.51, 'MSH3': 114.66, 'FAN1': 31.26},
 RATIO = {k: (v['MSH2'] + v['MSH3']) / v['FAN1'] for k, v in TPM.items()}
 
 FAN1_RHO = D['fan1_rho']
+MSH2_RHO = D['msh2_rho']
 NGENE = D['ngene']
 
 
@@ -241,7 +242,7 @@ def panel_null():
     top = max(hist)
     ys = lambda c: B - c / top * (B - T)
     o = []
-    o.append(tx(0, 24, 'Every gene in the matrix was put through the identical standardization; no gene tracks expansion more closely than FAN1', 19, INK, w=600))
+    o.append(tx(0, 24, 'Every gene in the matrix was standardized; no gene tracks expansion more closely than FAN1', 19, INK, w=600))
     ls, _ = para(0, 46, '%s genes reaching 1 transcript per million, each correlated with expansion across the same 11 donors. Expansion orders '
                         'the donors, so any gene varying along that order produces a correlation: this is the distribution of what that alone yields.' % f'{NGENE:,}')
     o += ls
@@ -267,14 +268,22 @@ def panel_null():
     o.append(tx(fx + 12, T + 26, 'FAN1,  rho = %+.2f' % FAN1_RHO, 15, ORANGE, w=700))
     o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}', 13, INK))
     o.append(tx(fx + 12, T + 68, 'no gene reaches it, and its own bar is one gene tall', 13, INK))
+    # MSH2, the other half of MutSβ, marked the same way on the opposite side
+    mx = xs(MSH2_RHO)
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1" '
+             'stroke-dasharray="3 4" opacity="0.6"/>' % (mx, B - 10, mx, T + 34, RED))
+    o.append('<circle cx="%.1f" cy="%.1f" r="5.5" fill="%s" stroke="%s" stroke-width="2"/>'
+             % (mx, B, RED, BG))
+    o.append(tx(mx - 12, T + 26, 'MSH2,  rho = %+.2f' % MSH2_RHO, 15, RED, 'end', w=700))
+    o.append(tx(mx - 12, T + 48, 'the partner that opposes FAN1,', 13, INK, 'end'))
+    o.append(tx(mx - 12, T + 68, 'running the other way', 13, INK, 'end'))
     ls, y = para(0, 410, 'Narrowed to the 1,935 genes of FAN1’s own abundance, within a factor of 1.3 either way, none reaches it either. '
                          'The figure is not what this many donors and this many genes throw up by chance.', 14, INK)
     o += ls
     ls, y = para(0, y + 6, 'That is a reference point, not a p-value: genes are correlated with one another, so the tail is not %s independent draws.'
                  % f'{NGENE:,}')
     o += ls
-    ls, y = para(0, y + 6, 'MSH2, the partner that opposes FAN1, runs the other way at rho = +0.66 — the direction the mechanism implies, '
-                           'from the opposite side of the balance.', 13)
+    ls, y = para(0, y + 6, 'The direction MSH2 runs is the one the mechanism implies, from the opposite side of the balance.', 13)
     o += ls
     ls, _ = para(0, y + 4, 'Eleven donors allow a correlation only 221 distinct values, 1/110 apart. Each bar holds five of them.', 13)
     o += ls
