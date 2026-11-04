@@ -1,15 +1,15 @@
-"""Rebuild out/Repeat_Disease_Thresholds.html from the five board files.
+"""Rebuild out/Repeat_Disease_Thresholds.html from the six board files.
 
 Main.dc.html draws its disease table through the canvas runtime's <sc-for> and
 {{ }} markup, so that board is expanded here with the values printed by
-expand.js. The other four boards are already plain markup.
+expand.js. The other five boards are already plain markup.
 """
 import json, re, subprocess, html as H
 
 P = '/tmp/claude-0/-home-claude/c597d61d-b908-51d6-86bf-6a3ff3524319/scratchpad/canvas/project/'
 OUT = '/home/claude/out/Repeat_Disease_Thresholds.html'
 ORDER = ['Main.dc.html', 'Inferences.dc.html', 'Histogram.dc.html',
-         'Reanalysis.dc.html', 'Timing.dc.html']
+         'Reanalysis.dc.html', 'Timing.dc.html', 'FAN1.dc.html']
 
 def board_div(text):
     i = text.find('<div style="width: 1520px')

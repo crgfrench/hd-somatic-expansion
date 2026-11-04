@@ -3,3 +3,4 @@ data/*
 __pycache__/
 *.pyc
 figures/src/Timing.dc.html
+figures/src/FAN1.dc.html

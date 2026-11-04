@@ -12,7 +12,7 @@ ORCID 0009-0001-8847-3018
 
 `figures/Repeat_Disease_Thresholds.pdf` opens in the browser from here, one page
 per board. `figures/Repeat_Disease_Thresholds.html` is the same content as a
-single self-contained page, which a browser renders once downloaded. Five
+single self-contained page, which a browser renders once downloaded. Six
 boards:
 
 1. Repeat lengths across 47 expansion disorders, on a logarithmic scale, with
@@ -23,6 +23,9 @@ boards:
 4. The re-analysis of the two papers' released data.
 5. Expansion timing: what the donor records allow to be measured, and what
    slowing the expansion would buy.
+6. FAN1 and the pace of expansion: the MutSβ–FAN1 competition, FAN1 against
+   expansion across the 11 cortex donors, where that correlation sits among all
+   17,516 genes, and the two regions compared.
 
 ## What was run
 
@@ -47,6 +50,15 @@ knockout-induced lists of von Schimmelmann et al., *Nat Neurosci* 19:1321
 removed: 18.4% of cortical phase D genes against 0.47% of the background.
 Removing every phase D gene from both sides leaves a cortical phase C
 enrichment resting on three genes.
+
+### Repair genes and expansion — `analysis/expression/`
+
+Whether a donor's own DNA-repair gene levels track how far that donor's repeat
+travelled. Across the 11 cortex donors FAN1 gives Spearman rho = −0.92, ranking first of
+17,516 genes put through identical standardization; holding inherited length constant it
+is −0.82, p = 0.004. The striatum shows nothing, on six donors with almost no variation
+in inherited length. `analysis/expression/README.md` has the method, the controls and
+the limits, including the reverse-causation problem a post-mortem snapshot cannot settle.
 
 ### Subtype thresholds — `notebooks/02_subtype_thresholds.ipynb`, `analysis/subtype_thresholds.py`
 
@@ -101,8 +113,10 @@ by notebook 01 rather than downloaded.
 
 ## Rebuilding the figures
 
-`figures/src/board_timing.py` writes the expansion-timing board.
-`build_standalone_page.py` assembles the five boards into the single HTML page,
+`figures/src/board_timing.py` writes the expansion-timing board and
+`figures/src/board_fan1.py` the FAN1 board, the latter from `repair_genes.json`
+as written by `analysis/expression/repair_genes_vs_expansion.py`.
+`build_standalone_page.py` assembles the six boards into the single HTML page,
 expanding the disease table through `expand_template.js` (Node).
 
 ## Sources
