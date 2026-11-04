@@ -1,7 +1,7 @@
 # Somatic CAG expansion in Huntington's disease: a re-analysis of released data
 
 Code and figures from a re-analysis of the data released with Kashin et al.,
-*Cell* 190 (2027) (cortex) and Handsaker et al., *Cell* 188:623 (2025)
+*Cell* (2026) (cortex) and Handsaker et al., *Cell* 188:623 (2025)
 (striatum). Everything here was computed from the public archives; no new
 experimental data is involved.
 
@@ -10,8 +10,10 @@ ORCID 0009-0001-8847-3018
 
 ## The figures
 
-`figures/Repeat_Disease_Thresholds.html` is a single self-contained page; open
-it in a browser. It holds five boards:
+`figures/Repeat_Disease_Thresholds.pdf` opens in the browser from here, one page
+per board. `figures/Repeat_Disease_Thresholds.html` is the same content as a
+single self-contained page, which a browser renders once downloaded. Five
+boards:
 
 1. Repeat lengths across 47 expansion disorders, on a logarithmic scale, with
    the Huntington's disease row marked and the 150-CAG cell-level threshold drawn
@@ -105,7 +107,7 @@ expanding the disease table through `expand_template.js` (Node).
 
 ## Sources
 
-- Kashin et al., *Cell* 190 (2027). Zenodo record 18202664.
+- Kashin, Lee et al., *Cell* (2026), doi:10.1016/j.cell.2026.10.001. Zenodo record 18202664.
 - Handsaker et al., *Cell* 188:623 (2025).
 - von Schimmelmann et al., *Nat Neurosci* 19:1321 (2016), supplementary tables 1 and 3.
 - Depienne and Mandel, *Am J Hum Genet* 108:764 (2021), for the disease table.
