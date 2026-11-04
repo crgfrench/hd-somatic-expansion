@@ -36,6 +36,21 @@ def para(x, y, text, size=13, fill=MUT, maxw=1392, lh=None, w=None):
     return [tx(x, y + i * lh, ln, size, fill, w=w) for i, ln in enumerate(out)], y + len(out) * lh
 
 
+def ols(X, Y):
+    n = len(X); mx = sum(X) / n; my = sum(Y) / n
+    sl = sum((a - mx) * (b - my) for a, b in zip(X, Y)) / sum((a - mx) ** 2 for a in X)
+    ic = my - sl * mx
+    ssr = sum((b - (ic + sl * a)) ** 2 for a, b in zip(X, Y))
+    sst = sum((b - my) ** 2 for b in Y)
+    return sl, ic, 1 - ssr / sst
+
+
+def eqn(ylab, xlab, sl, ic):
+    return '%s = (%s%.2f × %s %s %.2f)' % (
+        ylab, '−' if sl < 0 else '', abs(sl), xlab,
+        '−' if ic < 0 else '+', abs(ic))
+
+
 def svg(W, H, label, body):
     return ('<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s" '
             'style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">\n%s\n</svg>'
@@ -150,10 +165,8 @@ def panel_c():
     o.append(tx((L + R) / 2, B + 52, 'MutSβ to FAN1, measured in barely expanded nuclei', 14, INK, 'middle'))
     o.append(tx(42, (T + B) / 2, 'CAGs added', 14, INK, 'middle')
              .replace('<text ', '<text transform="rotate(-90 42 %.1f)" ' % ((T + B) / 2)))
-    X = [p['x'] for p in C['points']]; Y = [min(p['y'], 190) for p in C['points']]
-    n = len(X); mx = sum(X) / n; my = sum(Y) / n
-    sl = sum((a - mx) * (b - my) for a, b in zip(X, Y)) / sum((a - mx) ** 2 for a in X)
-    ic = my - sl * mx
+    X = [p['x'] for p in C['points']]; Y = [p['y'] for p in C['points']]
+    sl, ic, r2 = ols(X, Y)
     for p in C['points']:
         o.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s" fill-opacity="0.5" stroke="%s" stroke-width="1"/>'
                  % (xs(p['x']), ys(p['y']), VIOLET, VIOLET))
@@ -161,7 +174,9 @@ def panel_c():
              % (xs(3.3), ys(ic + sl * 3.3), xs(10.3), ys(ic + sl * 10.3), ORANGE))
     o.append(tx(R, T + 22, 'donor S02205, %d subtypes' % C['n'], 14, INK, 'end', w=600))
     o.append(tx(R, T + 44, 'rho %+.2f, p = %.0e' % (C['rho'], C['p']), 15, ORANGE, 'end', w=700))
-    o.append(tx(R, T + 64, 'the sign the mechanism forbids', 13, MUT, 'end'))
+    o.append(tx(R, T + 66, eqn('CAGs added', 'ratio', sl, ic), 14, INK, 'end'))
+    o.append(tx(R, T + 84, 'R² = %.2f' % r2, 13, MUT, 'end'))
+    o.append(tx(R, T + 104, 'the sign the mechanism forbids', 13, MUT, 'end'))
 
     # the six donors as a strip
     SL, SR, SY = 860, 1340, 200
@@ -202,6 +217,13 @@ def panel_d():
         o.append(tx(xs(v), B + 24, '%g' % v, 12, MUT, 'middle'))
     o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#b4ae9d" stroke-dasharray="5 4"/>'
              % (xs(lo), ys(lo), xs(hi), ys(hi)))
+    o.append(tx(xs(0.045) + 10, ys(0.045) + 6, 'equal levels', 12, '#8a8679'))
+    LX = [math.log10(max(p['x'], lo)) for p in G['points']]
+    LY = [math.log10(max(p['y'], lo)) for p in G['points']]
+    gsl, gic, gr2 = ols(LX, LY)
+    x1, x2 = math.log10(lo), math.log10(hi)
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2.5" stroke-dasharray="7 5"/>'
+             % (xs(10 ** x1), ys(10 ** (gic + gsl * x1)), xs(10 ** x2), ys(10 ** (gic + gsl * x2)), ORANGE))
     o.append(tx((L + R) / 2, B + 52, 'cortex, transcripts per million', 14, INK, 'middle'))
     o.append(tx(42, (T + B) / 2, 'striatum, transcripts per million', 14, INK, 'middle')
              .replace('<text ', '<text transform="rotate(-90 42 %.1f)" ' % ((T + B) / 2)))
@@ -211,7 +233,9 @@ def panel_d():
     for nm, dx, dy, anc in (('HOXD3', 10, -10, 'start'), ('HOXD10', -10, 16, 'end'), ('HOXC4', -10, -8, 'end')):
         p = [q for q in G['points'] if q['g'] == nm][0]
         o.append(tx(xs(p['x']) + dx, ys(p['y']) + dy, nm, 12, INK, anc, w=600))
-    o.append(tx(R - 6, B - 14, '%d genes, rho %+.2f' % (G['n'], G['rho']), 15, GREEN, 'end', w=700))
+    o.append(tx(R - 6, B - 56, '%d genes, rho %+.2f' % (G['n'], G['rho']), 15, GREEN, 'end', w=700))
+    o.append(tx(R - 6, B - 36, eqn('log striatum', 'log cortex', gsl, gic), 13, INK, 'end'))
+    o.append(tx(R - 6, B - 18, 'R² = %.2f, fitted on the logarithms' % gr2, 12, MUT, 'end'))
 
     # bars
     BL, BR, BB, BT = 760, 1340, 330, 110
@@ -235,10 +259,11 @@ def panel_d():
             o.append(tx(x + gw / 2, BB + 22, bar['region'], 12, col, 'middle', w=600))
         o.append(tx(x0 + i * 280 + gw + 8, BB + 44, lab + ' CAGs', 13, INK, 'middle', w=600))
 
-    ls, y = para(0, 418, 'The genes agree: the same clusters lead in both regions, HOXD3, HOXD10 and HOXC4 at the top of each. The timing does not. A cortical neuron opens its HOX clusters '
-                         'as soon as it passes about 150 copies; a striatal neuron at the same length has not moved.', 14, INK)
+    ls, y = para(0, 418, 'The genes agree: the same clusters lead in both regions, HOXD3, HOXD10 and HOXC4 at the top of each, and the fitted line runs at a slope of 1.01, so close to '
+                         'equal levels that the two are hard to separate. The timing does not agree. A cortical neuron opens its HOX clusters as soon as it passes about 150 copies; '
+                         'a striatal neuron at the same length has not moved.', 14, INK)
     o += ls
-    ls, y = para(0, y + 6, 'That band holds 18 million striatal transcripts, enough that a rise the size of the cortex’s would have shown about 75 HOX counts where 7 were seen, so this is a '
+    ls, y = para(0, y + 6, 'The 140 to 199 band holds 18 million striatal transcripts, enough that a rise the size of the cortex’s would have shown about 75 HOX counts where 7 were seen, so this is a '
                            'real difference rather than a thin sample. The region whose repeats travel fastest tolerates a given length best.')
     o += ls
     ls, _ = para(0, y + 6, 'Both regions reach the same place eventually, 102 times baseline in the cortex and 61 in the striatum past 260 copies.', 13)
