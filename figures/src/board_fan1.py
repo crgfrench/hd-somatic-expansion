@@ -1,8 +1,7 @@
 """Build the FAN1 board of the standalone page.
 
-Input is repair_genes.json, written by analysis/expression/repair_genes_vs_expansion.py:
-the per-donor standardized FAN1 rate in each region, and the genome-wide vector of
-Spearman correlations with expansion. Output is FAN1.dc.html beside this file.
+Input is repair_genes.json, written by analysis/expression/repair_genes_vs_expansion.py.
+Output is FAN1.dc.html beside this file.
 """
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -140,13 +139,13 @@ def panel_mechanism():
 
     # --- left branch: MutS beta
     for x0, col, head, sub, n_end, tail in [
-            (60, RED, 'MutSβ binds the loop and holds it',
-             'MSH2 and MSH3 together. The gap is then filled in against the displaced strand, '
-             'and the extra CAGs are written into the sequence.', 11,
+            (60, RED, 'MutSβ nicks the opposite strand',
+             'MSH2 and MSH3 together, with MutLγ. The gap is filled using the loop as the template, '
+             'so the extra CAGs are written into the sequence.', 11,
              'The repeat ends longer than it started.'),
-            (732, GREEN, 'FAN1 cuts the loop out',
-             'A structure-specific nuclease. The loop is excised and the strand rejoined, '
-             'so the extra CAGs never enter the sequence.', 8,
+            (732, GREEN, 'FAN1 cuts the looped strand',
+             'A structure-specific nuclease, acting with PCNA and RFC. The loop is removed and the '
+             'strand resynthesized, so the extra CAGs never enter the sequence.', 8,
              'The repeat returns to its original length.')]:
         o.append('<rect x="%.1f" y="216" width="600" height="212" rx="10" fill="#ffffff" stroke="%s"/>' % (x0, GRID))
         o.append('<rect x="%.1f" y="216" width="600" height="4" rx="2" fill="%s"/>' % (x0, col))
@@ -166,10 +165,10 @@ def panel_mechanism():
         o.append(tx(x0 + 24, 404, tail, 14, INK, w=600))
         o.append(tx(end + 14, 365, '%d triplets' % n_end, 12, MUT))
 
-    ls, y = para(0, 462, 'MutSβ does more than add length on its own: while it is bound it also blocks FAN1 from reaching the loop. '
-                         'The direction a cell drifts is therefore set by the balance between the two, not by either in isolation.', 14, INK)
+    ls, y = para(0, 462, 'The two are not independent: FAN1 also inhibits MutLγ, the nuclease MutSβ needs to make the nick, so it restrains the '
+                         'expansion step as well as removing the loop. The direction a cell drifts is set by the balance between them, not by either alone.', 14, INK)
     o += ls
-    ls, _ = para(0, y + 10, 'Drawn from the published biochemistry, not measured here. Triplet counts are illustrative.', 13)
+    ls, _ = para(0, y + 10, 'Drawn from work on purified proteins and synthetic substrates, not measured here. Triplet counts are illustrative.', 13)
     o += ls
     return svg(W, H, 'MutS beta and FAN1 acting on a slipped-out CAG loop, with opposite outcomes', o)
 
@@ -220,8 +219,8 @@ def panel_cortex_scatter():
     ls, y = para(0, 456, 'The direction is the one the biology predicts: less of the enzyme that removes loops, further the repeat gets. '
                          'What the figure cannot settle is which way the arrow runs.', 14, INK)
     o += ls
-    ls, y = para(0, y + 6, 'FAN1 protein has been reported lower in Huntington’s cortex than in controls, so a decline that follows the damage '
-                           'rather than causing it would leave the same pattern. Only material sampled before the expansion could tell them apart.')
+    ls, y = para(0, y + 6, 'If the growth of the repeat, or the damage that follows it, lowers FAN1 in the neurons furthest along, the same pattern appears '
+                           'with the arrow running the other way. Only material sampled before the expansion could tell the two apart.')
     o += ls
     ls, _ = para(0, y + 6, 'Each donor keeps the colour it has on the timing board.', 13)
     o += ls
@@ -326,7 +325,7 @@ def balance(x0, y0, label, ratio, mutsb, fan1, col):
 
 
 def panel_two_regions():
-    W, H = 1392, 700
+    W, H = 1392, 742
     o = []
     o.append(tx(0, 24, 'The striatum, where the repeats run furthest, is where FAN1 is most outnumbered — and where 6 donors cannot settle anything', 19, INK, w=600))
     o.append(tx(0, 46, 'Regional pseudobulk expression from the same matrices, and the same standardized correlation run on striatal projection neurons.', 14))
@@ -375,12 +374,16 @@ def panel_two_regions():
                             'inherited length and differing in onset. The mechanism already has independent support and the modifier genetics already '
                             'point at FAN1; what is new here is that the ordering holds between individuals, within one tissue.', 14, INK)
     o += ls
-    ls, _ = para(0, y + 12, 'Standardization, barcode matching and the streaming reader are in the repository; the figures above come from that code.', 13)
+    ls, y = para(0, y + 12, 'The standardization, the barcode matching and the streaming reader of the expression matrices are at '
+                            'github.com/crgfrench/hd-somatic-expansion; the figures above come from that code.', 13)
+    o += ls
+    ls, _ = para(0, y + 14, 'Sources: single-nucleus expression and per-nucleus repeat lengths, Kashin, Lee et al., Cell 2026 (Zenodo record 18202664), '
+                            'cortical excitatory neurons and striatal projection neurons. Repair mechanism: Senoussi et al., Nature Communications 16:9445, 2025.', 12)
     o += ls
     return svg(W, H, 'MutS beta against FAN1 in two regions, drawn as a balance, beside the striatal scatter', o)
 
 
-HEIGHT = 2612
+HEIGHT = 2654
 page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -399,7 +402,7 @@ body{{margin:0}}
 <div style="width: 1520px; height: {HEIGHT}px; box-sizing: border-box; padding: 64px; background: {BG}; color: {INK}; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
 
 <div style="display: flex; flex-direction: column; gap: 10px">
-<h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">Which cells expand fastest, and the repair gene that tracks it</h1>
+<h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">FAN1, the gene that ranks first across the 11 cortex donors</h1>
 <p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">A re-analysis of the single-nucleus data released with the 2026 cortex paper (Zenodo record 18202664). Every gene in the matrix was given a per-donor expression rate standardized on the distribution of repeat lengths, then correlated with how far each donor&#8217;s repeats had travelled. The gene that comes out first is <i>FAN1</i>, the nuclease that removes the looped-out repeat.</p>
 </div>
 

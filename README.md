@@ -20,7 +20,8 @@ boards:
    against them.
 2. What other repeat disorders suggest about where a threshold can come from.
 3. The distribution of the shortest disease-causing length across those 47.
-4. The re-analysis of the two papers' released data.
+4. The re-analysis of the two papers' released data, including which phase D
+   genes sit together on the chromosome.
 5. Expansion timing: what the donor records allow to be measured, and what
    slowing the expansion would buy.
 6. FAN1 and the pace of expansion: the MutSβ–FAN1 competition, FAN1 against
@@ -50,6 +51,27 @@ knockout-induced lists of von Schimmelmann et al., *Nat Neurosci* 19:1321
 removed: 18.4% of cortical phase D genes against 0.47% of the background.
 Removing every phase D gene from both sides leaves a cortical phase C
 enrichment resting on three genes.
+
+### Where the phase genes sit — `analysis/phase_gene_clustering.py`
+
+Whether the phase C and phase D gene sets are bunched along the chromosome,
+which a domain-level failure of polycomb silencing would produce. The answer is
+specific rather than general: 11 of the 23 HOX genes in the cortex statistics
+are phase D genes against 0.22 expected, all four clusters with their embedded
+lncRNAs, and 4 of 17 in the striatum against 0.54. The only other multi-gene run
+is MEG3 with MEG8 at the imprinted DLK1-DIO3 locus. Set the clusters aside and
+the remaining phase D genes are no more bunched than chance.
+
+The script reports three tests and the order matters. The spatial test against a
+null drawn from every tested gene is biased and is printed only so the bias is
+visible: the phase sets run near 190 transcripts per million against 17 for all
+tested genes, while clustered paralog families are quiet. Matching the null on
+abundance changes cortical phase C from p = 0.66 to p = 0.002. It cannot be
+applied to the HOX result, because all 11 of those genes sit below the 1 TPM
+floor of the abundance table, so the gene-family count is the evidence there.
+
+A GRCh38 gene table with columns `symbol`, `chr` and `start` is needed, and an
+abundance table measured in the same region as the statistics it matches.
 
 ### Repair genes and expansion — `analysis/expression/`
 
@@ -113,6 +135,9 @@ by notebook 01 rather than downloaded.
 
 ## Rebuilding the figures
 
+`figures/src/panel_hox.py` redraws the HOX panel inside the re-analysis board,
+rewriting the region between its `hox:start` and `hox:end` markers from
+`hox_clusters.json` as written by `analysis/phase_gene_clustering.py`.
 `figures/src/board_timing.py` writes the expansion-timing board and
 `figures/src/board_fan1.py` the FAN1 board, the latter from `repair_genes.json`
 as written by `analysis/expression/repair_genes_vs_expansion.py`.

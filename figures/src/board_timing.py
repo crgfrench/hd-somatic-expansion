@@ -47,7 +47,7 @@ def panel_age_vs_cag():
     ys = lambda a: B - (a - 30) / (110 - 30) * (B - T)
     o = ['<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="Age at death against inherited repeat length for 54 Huntington\'s disease donors" style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">' % (W, H, W, H)]
     o.append(tx(0, 28, 'Age at death falls as the inherited repeat lengthens', 19, INK, w=600))
-    o.append(tx(0, 50, '54 donors in the 2027 archive. Spearman rho = −0.79, p = 2 × 10⁻¹²', 14))
+    o.append(tx(0, 50, '54 donors in the 2026 archive. Spearman rho = −0.79, p = 2 × 10⁻¹²', 14))
     for a in range(30, 111, 20):
         o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (L, ys(a), R, ys(a), GRID))
         o.append(tx(L - 10, ys(a) + 4, str(a), 12, MUT, 'end'))
@@ -162,7 +162,7 @@ def panel_delay():
 
 # ---------------------------------------------------------------- panel 4
 def panel_required():
-    W, H = 1392, 400
+    W, H = 1392, 432
     o = ['<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="Slowing required to buy ten years of delay, by age at which treatment starts" style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">' % (W, H, W, H)]
     o.append(tx(0, 24, 'The same relationship read backwards: how much slowing ten years of delay would take', 19, INK, w=600))
     o.append(tx(0, 46, 'Born with 42 repeats, expected onset at age 54', 14))
@@ -187,12 +187,13 @@ def panel_required():
     o.append(tx((L + R) / 2, B + 52, 'Age at which treatment starts', 14, INK, 'middle'))
     o.append(tx(L - 72, (T + B) / 2, 'Slowing required', 14, INK, 'middle')
              .replace('<text ', '<text transform="rotate(-90 %.1f %.1f)" ' % (L - 72, (T + B) / 2)))
-    o.append(tx(0, 356, 'Knocking down MSH3 by 55 to 60% held expansion in mouse striatum for four months. On this curve that degree of slowing covers ten years', 14, INK))
-    o.append(tx(0, 378, 'of delay when it begins before about age 45. Begun at 50 the same knockdown covers five years, and begun at 54 it covers none.', 14, INK))
+    o.append(tx(0, 356, 'Silencing MSH3 by about 60% blocked measurable expansion in the striatum of BAC-CAG mice over the four months followed. A partial', 14, INK))
+    o.append(tx(0, 378, 'knockdown produced a near-complete stop there, so the percentages on this curve are slowing of the expansion itself, not a dose of knockdown.', 14, INK))
+    o.append(tx(0, 400, 'Read against the curve: ten years of delay takes 29% slowing if it begins at age 30, 42% at 40 and 71% at 50.', 14, MUT))
     o.append('</svg>')
     return '\n'.join(o)
 
-HEIGHT = 2344
+HEIGHT = 2432
 page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -212,7 +213,7 @@ body{{margin:0}}
 
 <div style="display: flex; flex-direction: column; gap: 10px">
 <h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">How fast the repeat grows, and what slowing it would buy</h1>
-<p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">Donor records released with the 2027 paper (Zenodo record 18202664): age at death, the repeat length inherited on the affected copy of <i>HTT</i>, and per-nucleus repeat lengths in cortical neurons for 11 of the donors. Expected onset ages are 649/(CAG&#8722;30) years, the Enroll-HD calibration of the CAG-Age Product.</p>
+<p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">Donor records released with the 2026 cortex paper (Zenodo record 18202664): age at death, the repeat length inherited on the affected copy of <i>HTT</i>, and per-nucleus repeat lengths in cortical neurons for 11 of the donors. Expected onset ages are 649/(CAG&#8722;30) years, the Enroll-HD calibration of the CAG-Age Product.</p>
 </div>
 
 {panel_age_vs_cag()}
@@ -222,6 +223,8 @@ body{{margin:0}}
 {panel_delay()}
 
 {panel_required()}
+
+<p style="margin: 0; font-size: 12px; line-height: 18px; color: {MUT}">Sources: donor records and per-nucleus repeat lengths, Kashin, Lee et al., <i>Cell</i> 2026 (Zenodo record 18202664). Expected onset from the CAG-Age Product, Warner et al. 2020. MSH3 silencing in mice: O&#8217;Reilly et al., <i>Molecular Therapy</i> 31:1661, 2023; the four-month figures are read from the bioRxiv preprint of that paper. The delay and slowing curves are arithmetic on the onset formula, not fitted to data.</p>
 
 </div>
 </x-dc>
