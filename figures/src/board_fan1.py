@@ -33,6 +33,9 @@ RATIO = {k: (v['MSH2'] + v['MSH3']) / v['FAN1'] for k, v in TPM.items()}
 
 FAN1_RHO = D['fan1_rho']
 MSH2_RHO = D['msh2_rho']
+POOL_MAX = D['pool_max']
+POOL_N = sum(D['matched'])
+DEEP = '#7d7768'      # the abundance-matched subset, stacked inside each bar
 NGENE = D['ngene']
 
 
@@ -236,9 +239,11 @@ def panel_null():
     # heights; these bars hold 5 each.
     PER, STEP = 5, 1.0 / 110
     nb = 220 // PER + 1
-    hist = [0] * nb
-    for r in D['rho']:
-        hist[min(nb - 1, (int(round(r * 110)) + 110) // PER)] += 1
+    hist, sub = [0] * nb, [0] * nb
+    for r, m in zip(D['rho'], D['matched']):
+        j = min(nb - 1, (int(round(r * 110)) + 110) // PER)
+        hist[j] += 1
+        sub[j] += m
     top = max(hist)
     ys = lambda c: B - c / top * (B - T)
     o = []
@@ -251,8 +256,12 @@ def panel_null():
         o.append(tx(L - 10, ys(c) + 4, f'{c:,}', 12, MUT, 'end'))
     for j, c in enumerate(hist):
         x0, x1 = xs((-110 + j * PER) * STEP), xs((-110 + (j + 1) * PER) * STEP)
+        w = max(1.0, x1 - x0 - 1.2)
         o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="%s"/>'
-                 % (x0 + 0.6, ys(c), max(1.0, x1 - x0 - 1.2), B - ys(c), '#c9c4b8'))
+                 % (x0 + 0.6, ys(c), w, B - ys(c), '#c9c4b8'))
+        if sub[j]:
+            o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="%s"/>'
+                     % (x0 + 0.6, ys(sub[j]), w, B - ys(sub[j]), DEEP))
     for v in (-1, -0.5, 0, 0.5, 1):
         o.append(tx(xs(v), B + 24, ('%+.1f' % v).replace('-', '−') if v else '0', 12, MUT, 'middle'))
     o.append(tx((L + R) / 2, B + 52, 'Spearman rho between the gene and expansion achieved', 14, INK, 'middle'))
@@ -268,6 +277,11 @@ def panel_null():
     o.append(tx(fx + 12, T + 26, 'FAN1,  rho = %+.2f' % FAN1_RHO, 15, ORANGE, w=700))
     o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}', 13, INK))
     o.append(tx(fx + 12, T + 68, 'no gene reaches it, and its own bar is one gene tall', 13, INK))
+    for i, (col, lab) in enumerate([('#c9c4b8', 'all %s genes' % f'{NGENE:,}'),
+                                    (DEEP, 'the %s at FAN1’s own abundance, %.0f to %.0f TPM'
+                                     % (f'{POOL_N:,}', D['fan1_tpm'] / 1.3, D['fan1_tpm'] * 1.3))]):
+        o.append('<rect x="%.1f" y="%.1f" width="14" height="14" fill="%s"/>' % (fx + 12, T + 98 + i * 24, col))
+        o.append(tx(fx + 34, T + 110 + i * 24, lab, 13, INK))
     # MSH2, the other half of MutSβ, marked the same way on the opposite side
     mx = xs(MSH2_RHO)
     o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1" '
@@ -277,8 +291,8 @@ def panel_null():
     o.append(tx(mx - 12, T + 26, 'MSH2,  rho = %+.2f' % MSH2_RHO, 15, RED, 'end', w=700))
     o.append(tx(mx - 12, T + 48, 'the partner that opposes FAN1,', 13, INK, 'end'))
     o.append(tx(mx - 12, T + 68, 'running the other way', 13, INK, 'end'))
-    ls, y = para(0, 410, 'Narrowed to the 1,935 genes of FAN1’s own abundance, within a factor of 1.3 either way, none reaches it either. '
-                         'The figure is not what this many donors and this many genes throw up by chance.', 14, INK)
+    ls, y = para(0, 410, 'The darker part of each bar is the %s genes expressed within a factor of 1.3 of FAN1 itself. They are spread as widely as '
+                         'the rest, a standard deviation of 0.33 against 0.34, and the nearest of them reaches %.2f.' % (f'{POOL_N:,}', POOL_MAX), 14, INK)
     o += ls
     ls, y = para(0, y + 6, 'That is a reference point, not a p-value: genes are correlated with one another, so the tail is not %s independent draws.'
                  % f'{NGENE:,}')
