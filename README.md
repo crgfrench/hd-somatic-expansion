@@ -11,7 +11,7 @@ ORCID 0009-0001-8847-3018
 ## The figures
 
 `figures/Repeat_Disease_Thresholds.pdf` opens in the browser from here, one page
-per board. `figures/Repeat_Disease_Thresholds.html` is the same content as a
+per board, each page sized to the board it holds. `figures/Repeat_Disease_Thresholds.html` is the same content as a
 single self-contained page, which a browser renders once downloaded. Six
 boards:
 
@@ -117,7 +117,9 @@ by notebook 01 rather than downloaded.
 `figures/src/board_fan1.py` the FAN1 board, the latter from `repair_genes.json`
 as written by `analysis/expression/repair_genes_vs_expansion.py`.
 `build_standalone_page.py` assembles the six boards into the single HTML page,
-expanding the disease table through `expand_template.js` (Node).
+expanding the disease table through `expand_template.js` (Node). `build_pdf.py`
+then renders that page to PDF, one board per page at the board's own height,
+through `build_pdf.js` (Playwright) and pypdf.
 
 ## Sources
 

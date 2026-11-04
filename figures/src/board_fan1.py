@@ -237,7 +237,7 @@ def panel_null():
     top = max(hist)
     ys = lambda c: B - c / top * (B - T)
     o = []
-    o.append(tx(0, 24, 'Every gene in the matrix was put through the identical standardization; FAN1’s figure is the largest of them', 19, INK, w=600))
+    o.append(tx(0, 24, 'Every gene in the matrix was put through the identical standardization; no gene tracks expansion more closely than FAN1', 19, INK, w=600))
     ls, _ = para(0, 46, '%s genes reaching 1 transcript per million, each correlated with expansion across the same 11 donors. Expansion orders '
                         'the donors, so any gene varying along that order produces a correlation: this is the distribution of what that alone yields.' % f'{NGENE:,}')
     o += ls
@@ -291,7 +291,7 @@ def balance(x0, y0, label, ratio, mutsb, fan1, col):
 
 
 def panel_two_regions():
-    W, H = 1392, 606
+    W, H = 1392, 700
     o = []
     o.append(tx(0, 24, 'The striatum, where the repeats run furthest, is where FAN1 is most outnumbered — and where 6 donors cannot settle anything', 19, INK, w=600))
     o.append(tx(0, 46, 'Regional pseudobulk expression from the same matrices, and the same standardized correlation run on striatal projection neurons.', 14))
@@ -345,7 +345,7 @@ def panel_two_regions():
     return svg(W, H, 'MutS beta against FAN1 in two regions, drawn as a balance, beside the striatal scatter', o)
 
 
-HEIGHT = 2498
+HEIGHT = 2592
 page = f"""<!doctype html>
 <html lang="en">
 <head>
