@@ -89,8 +89,9 @@ cy = 322
 ls, cy = para(0, cy, 'Set the clusters aside and the remaining phase D genes are no more bunched than chance, so what they share is being a polycomb target rather than '
                      'being neighbours. Polycomb targets lie all over the genome; HOX is where they sit in a row.', 13, INK)
 o += ls
-ls, cy = para(0, cy + 8, 'The clusters bring their own long non-coding RNAs with them — HOTAIRM1, HOTTIP, HOXA-AS2, HOXD-AS2 and HOXB-AS1 all reach phase D — and the HOX '
-                         'genes rise from below 1 transcript per million to a level still below it, which is what a silenced domain opening looks like rather than a gene switched on hard.')
+ls, cy = para(0, cy + 8, 'The clusters bring their own long non-coding RNAs with them: HOTAIRM1, HOTTIP, HOXA-AS2, HOXD-AS2 and HOXB-AS1 all reach phase D. Scored in the '
+                         'nuclei themselves rather than per donor, HOX expression runs at 0.33 transcripts per million below 100 CAGs and 33 above 260, carried by 1.2% of nuclei '
+                         'and then by 23% of them.')
 o += ls
 ls, cy = para(0, cy + 8, 'Counted by gene family. A spatial test is not used for these genes: the phase sets run near 190 transcripts per million against 17 for all tested genes, '
                          'so a null drawn from every gene is mis-matched, and matching on abundance drops all 11 HOX genes, which sit below the 1 TPM floor of the abundance table.')
