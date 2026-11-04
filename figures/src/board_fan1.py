@@ -1,8 +1,3 @@
-"""Build the FAN1 board of the standalone page.
-
-Input is repair_genes.json, written by analysis/expression/repair_genes_vs_expansion.py.
-Output is FAN1.dc.html beside this file.
-"""
 import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 import json, math
@@ -14,8 +9,8 @@ BLUE, ORANGE, BAND, GREEN = '#2f6db5', '#d9822b', '#efe8d8', '#4a8a5c'
 RED, SLATE = '#a3202a', '#8a8679'
 E = lambda s: (s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
 
-# Same palette and the same donor-to-colour assignment as the timing board, so a
-# donor keeps its colour across the two boards.
+# Same palette and the same donor-to-color assignment as the timing board, so a
+# donor keeps its color across the two boards.
 DONOR_HUES = ['#a3202a', '#f08076',
               '#c25a00', '#e89a2e',
               '#d9c400',
@@ -166,9 +161,9 @@ def panel_mechanism():
         o.append(tx(end + 14, 365, '%d triplets' % n_end, 12, MUT))
 
     ls, y = para(0, 462, 'The two are not independent: FAN1 also inhibits MutLγ, the nuclease MutSβ needs to make the nick, so it restrains the '
-                         'expansion step as well as removing the loop. The direction a cell drifts is set by the balance between them, not by either alone.', 14, INK)
+                         'expansion step as well as removing the loop. The balance between them sets the direction a cell drifts, and neither enzyme sets it alone.', 14, INK)
     o += ls
-    ls, _ = para(0, y + 10, 'Drawn from work on purified proteins and synthetic substrates, not measured here. Triplet counts are illustrative.', 13)
+    ls, _ = para(0, y + 10, 'Drawn from work on purified proteins and synthetic substrates. Triplet counts are illustrative.', 13)
     o += ls
     return svg(W, H, 'MutS beta and FAN1 acting on a slipped-out CAG loop, with opposite outcomes', o)
 
@@ -180,7 +175,7 @@ def panel_cortex_scatter():
     xs = lambda v: L + v / 190.0 * (R - L)
     ys = lambda v: B - (v - 24) / (42 - 24) * (B - T)
     o = []
-    o.append(tx(0, 24, 'Across the 11 cortex donors, the ones whose repeats travelled furthest carry the least FAN1', 19, INK, w=600))
+    o.append(tx(0, 24, 'Across the 11 cortex donors, the ones whose repeats travelled furthest have the least FAN1', 19, INK, w=600))
     ls, _ = para(0, 46, 'FAN1 transcripts per million in cortical excitatory neurons, standardized so every donor is compared at the same '
                         'distribution of repeat lengths. Expansion is the 90th percentile repeat length in that donor, less the length inherited.')
     o += ls
@@ -222,7 +217,7 @@ def panel_cortex_scatter():
     ls, y = para(0, y + 6, 'If the growth of the repeat, or the damage that follows it, lowers FAN1 in the neurons furthest along, the same pattern appears '
                            'with the arrow running the other way. Only material sampled before the expansion could tell the two apart.')
     o += ls
-    ls, _ = para(0, y + 6, 'Each donor keeps the colour it has on the timing board.', 13)
+    ls, _ = para(0, y + 6, 'Each donor keeps the color it has on the timing board.', 13)
     o += ls
     return svg(W, H, 'FAN1 expression against expansion achieved in eleven cortex donors', o)
 
@@ -359,7 +354,7 @@ def panel_two_regions():
                  % (xs(d['exp']), ys(d['fan1']), c, BG))
     rho_s = spearman([d['exp'] for d in S], [d['fan1'] for d in S])
     o.append(tx(R, T - 22, 'rho = %+.2f' % rho_s, 15, INK, 'end', w=600))
-    ls, _ = para(L - 44, 368, 'Two of the six are also cortex donors and keep their colours; the other four are grey.', 12, MUT, maxw=466)
+    ls, _ = para(L - 44, 368, 'Two of the six are also cortex donors and keep their colors; the other four are gray.', 12, MUT, maxw=466)
     o += ls
 
     ls, y = para(0, 412, 'The two regions do not disagree. The striatal donors all sit far out along the expansion axis, between 72 and 205 CAGs '

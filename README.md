@@ -122,7 +122,7 @@ CAGs, 102 times baseline against 61.
 
 Gene rows are pulled from the matrices by
 `analysis/expression/extract_gene_rows.py`, which also recovers the column
-barcodes, needed because the striatal summary carries 6,359 rows against 9,426
+barcodes, needed because the striatal summary has 6,359 rows against 9,426
 matrix columns.
 
 ### Subtype thresholds — `notebooks/02_subtype_thresholds.ipynb`, `analysis/subtype_thresholds.py`
@@ -141,7 +141,7 @@ substantive result. Across the 54 HD donors in `donor_metadata.txt`, age at
 death and inherited CAG length correlate at Spearman rho = −0.79,
 p = 2 × 10⁻¹². Age at death is an outcome of the expansion rather than an
 independent exposure time, so the donors with the most elapsed years are the
-ones whose repeats grow slowest. Within the 11 donors carrying per-nucleus
+ones whose repeats grow slowest. Within the 11 donors with per-nucleus
 lengths, age predicts the expansion achieved at rho = −0.11 (p = 0.74) while
 inherited length predicts it at rho = +0.85 (p = 0.001). Measuring the rate
 would need donors who died of unrelated causes across a span of ages, or
@@ -156,11 +156,44 @@ without it. Both are kept so the failure can be inspected.
 ### Slowing and delay — `analysis/selection_and_delay.py`
 
 In any growth law, rate and time appear only as a product, so cutting the rate by
-a fraction *f* multiplies every remaining interval by 1/(1 − *f*). Anchored on
-observed clinical onset — 649/(CAG − 30) years, the Enroll-HD calibration of the
-CAG-Age Product — a person born with 42 repeats has an expected onset at 54, and
+a fraction *f* multiplies every remaining interval by 1/(1 − *f*). The anchor is
+observed clinical onset: 649/(CAG − 30) years, the Enroll-HD calibration of the
+CAG-Age Product. A person born with 42 repeats has an expected onset at 54, and
 treatment begun at 30 needs 29% slowing to buy ten years. Begun at 50 the same
 ten years needs 71%. This holds whatever the exponent is.
+
+## Reproducing the page
+
+The seven boards live in `figures/src/`. Four are written by hand and are the
+source of record for themselves; three are generated. From a clean checkout:
+
+```
+cd figures/src
+python3 board_timing.py          # writes Timing.dc.html
+python3 board_fan1.py            # writes FAN1.dc.html
+python3 board_silencing.py       # writes Silencing.dc.html
+python3 panel_hox.py             # rewrites one panel inside Reanalysis.dc.html
+python3 build_standalone_page.py # assembles all seven into figures/…html
+python3 build_pdf.py             # renders that to PDF, one board per page
+```
+
+Each generator reads a JSON file beside it that an analysis script wrote, so the
+drawings follow from the data rather than being redrawn by hand: `board_timing.py`
+from `donor_table.json`, `board_fan1.py` from `repair_genes.json` as written by
+`analysis/expression/repair_genes_vs_expansion.py`, `board_silencing.py` from
+`silencing_data.json` as written by `analysis/silencing_tests.py`, and
+`panel_hox.py` from `hox_clusters.json` as written by
+`analysis/phase_gene_clustering.py`, rewriting the region between the
+`hox:start` and `hox:end` markers in the re-analysis board. Assembling the
+page needs Python and Node; the PDF step also needs Playwright with a browser
+(`npm install playwright && npx playwright install chromium`). Running it this
+way reproduces `figures/Repeat_Disease_Thresholds.html` byte for byte.
+
+Two further scripts, `board_reanalysis.py` and `board_expansion_panels.py`,
+write SVG fragments rather than whole boards. Those fragments were pasted into
+the two hand-written boards they belong to, and the scripts are kept so the
+drawings can be regenerated. `board_reanalysis.py` needs a per-gene onset
+summary as JSON, which notebook 01 produces and which is not committed here.
 
 ## Running it
 
@@ -172,24 +205,10 @@ python3 analysis/prc2_enrichment.py /path/to/input/files
 ```
 
 With no argument the scripts read from `data/`. The input files each script
-needs are listed in `data/PUT_INPUT_FILES_HERE.txt`. Two of them —
-`per_nucleus_repeat_lengths.csv.gz` and `phaseC_gene_onsets.csv` — are written
+needs are listed in `data/PUT_INPUT_FILES_HERE.txt`. Two of them,
+`per_nucleus_repeat_lengths.csv.gz` and `phaseC_gene_onsets.csv`, are written
 by notebook 01 rather than downloaded.
 
-## Rebuilding the figures
-
-`figures/src/panel_hox.py` redraws the HOX panel inside the re-analysis board,
-rewriting the region between its `hox:start` and `hox:end` markers from
-`hox_clusters.json` as written by `analysis/phase_gene_clustering.py`.
-`figures/src/board_timing.py` writes the expansion-timing board and
-`figures/src/board_fan1.py` the FAN1 board, the latter from `repair_genes.json`
-as written by `analysis/expression/repair_genes_vs_expansion.py`.
-`figures/src/board_silencing.py` writes the seventh board from
-`silencing_data.json` as written by `analysis/silencing_tests.py`.
-`build_standalone_page.py` assembles the seven boards into the single HTML page,
-expanding the disease table through `expand_template.js` (Node). `build_pdf.py`
-then renders that page to PDF, one board per page at the board's own height,
-through `build_pdf.js` (Playwright) and pypdf.
 
 ## Sources
 

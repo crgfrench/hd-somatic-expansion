@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Distribution of cutoffs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6db5}a:hover{color:#1d4f8a}
+</style>
+</helmet>
+<div style="width: 1520px; height: 1480px; box-sizing: border-box; padding: 64px; background: #fbfaf7; color: #1d1d1b; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">Shortest disease-causing repeat length across 47 repeat diseases</h1>
+<p style="margin: 0; font-size: 16px; line-height: 24px; color: #5c5a55">Each disease counted once, at the lowest length in its disease-causing range, in repeat units. Bins widen as lengths grow. Cutoffs reported as “above” a number are counted at that number.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: center; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="0" y="0" width="20" height="20" rx="3" fill="#2f6db5"></rect></svg><span>Repeat in the protein-coding sequence (19 diseases)</span></div>
+<div style="display: flex; align-items: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="0" y="0" width="20" height="20" rx="3" fill="#d9822b"></rect></svg><span>Repeat outside the coding sequence (28 diseases)</span></div>
+<div style="display: flex; align-items: center; gap: 8px"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="0" y="0" width="20" height="20" rx="3" fill="#1d4f8a"></rect></svg><span>Huntington’s disease, one of the eight at 30–49, at 36</span></div>
+</div>
+
+<svg width="1392" height="540" viewBox="0 0 1392 540" role="img" aria-label="Histogram. Protein-coding repeats: 2 diseases at 10 to 19, 8 at 20 to 29, 8 at 30 to 49, 1 at 50 to 99. Repeats outside the coding sequence: 7 at 30 to 49, 9 at 50 to 99, 2 at 100 to 199, 6 at 200 to 499, 4 at 500 to 999" style="flex: none; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+<line x1="100" y1="380" x2="1360" y2="380" stroke="#e4dfd4" stroke-width="1"></line>
+<line x1="100" y1="300" x2="1360" y2="300" stroke="#e4dfd4" stroke-width="1"></line>
+<line x1="100" y1="220" x2="1360" y2="220" stroke="#e4dfd4" stroke-width="1"></line>
+<line x1="100" y1="140" x2="1360" y2="140" stroke="#e4dfd4" stroke-width="1"></line>
+<text x="88" y="464" text-anchor="end" font-size="13" fill="#5c5a55">0</text>
+<text x="88" y="384" text-anchor="end" font-size="13" fill="#5c5a55">2</text>
+<text x="88" y="304" text-anchor="end" font-size="13" fill="#5c5a55">4</text>
+<text x="88" y="224" text-anchor="end" font-size="13" fill="#5c5a55">6</text>
+<text x="88" y="144" text-anchor="end" font-size="13" fill="#5c5a55">8</text>
+<text x="30" y="300" text-anchor="middle" font-size="14" fill="#1d1d1b" transform="rotate(-90 30 300)">Number of diseases</text>
+
+<rect x="122" y="380" width="64" height="80" rx="3" fill="#2f6db5"></rect>
+<rect x="302" y="140" width="64" height="320" rx="3" fill="#2f6db5"></rect>
+<rect x="482" y="140" width="64" height="320" rx="3" fill="#2f6db5"></rect><rect x="482" y="422" width="64" height="38" rx="3" fill="#1d4f8a"></rect>
+<rect x="554" y="180" width="64" height="280" rx="3" fill="#d9822b"></rect>
+<rect x="662" y="420" width="64" height="40" rx="3" fill="#2f6db5"></rect>
+<rect x="734" y="100" width="64" height="360" rx="3" fill="#d9822b"></rect>
+<rect x="914" y="380" width="64" height="80" rx="3" fill="#d9822b"></rect>
+<rect x="1094" y="220" width="64" height="240" rx="3" fill="#d9822b"></rect>
+<rect x="1274" y="300" width="64" height="160" rx="3" fill="#d9822b"></rect>
+
+<text x="154" y="372" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">2</text>
+<text x="334" y="132" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">8</text>
+<text x="514" y="132" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">8</text>
+<text x="586" y="172" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">7</text>
+<text x="694" y="412" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">1</text>
+<text x="766" y="92" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">9</text>
+<text x="946" y="372" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">2</text>
+<text x="1126" y="212" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">6</text>
+<text x="1306" y="292" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1d1b">4</text>
+
+<line x1="910" y1="320" x2="910" y2="460" stroke="#1d1d1b" stroke-width="2" stroke-dasharray="4 3"></line>
+<text x="910" y="298" text-anchor="middle" font-size="12" fill="#1d1d1b">150 CAGs inside HD neurons</text>
+<text x="910" y="314" text-anchor="middle" font-size="12" fill="#5c5a55">(not an inherited cutoff)</text>
+
+<line x1="100" y1="460" x2="1360" y2="460" stroke="#5c5a55" stroke-width="1.5"></line>
+<text x="190" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">10–19</text>
+<text x="370" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">20–29</text>
+<text x="550" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">30–49</text>
+<text x="730" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">50–99</text>
+<text x="910" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">100–199</text>
+<text x="1090" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">200–499</text>
+<text x="1270" y="486" text-anchor="middle" font-size="14" fill="#1d1d1b">500–999</text>
+<text x="730" y="524" text-anchor="middle" font-size="14" fill="#1d1d1b">Shortest disease-causing length (repeat units)</text>
+
+<path d="M 110 82 L 110 74 L 640 74 L 640 82" fill="none" stroke="#2f6db5" stroke-width="2"></path>
+<text x="375" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#2f6db5">Protein-coding: 12 to 55, median 27</text>
+<path d="M 470 38 L 470 30 L 1350 30 L 1350 38" fill="none" stroke="#b5651d" stroke-width="2"></path>
+<text x="910" y="20" text-anchor="middle" font-size="13" font-weight="600" fill="#b5651d">Outside coding sequence: 30 to 680, median about 82</text>
+</svg>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px">
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">1</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">How the repeat does damage sets the cutoff</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">Repeats in the coding sequence act through the protein and cause disease at 12–55 units. Repeats elsewhere act through toxic RNA, gene silencing or repeat proteins and need 30–680. CTG causes disease at 50 in <i>DMPK</i> and 74 in <i>ATXN8OS</i>; CAG causes Huntington's disease at 36 inside the coding sequence.</p>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">2</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">Gene-silencing diseases sit near 200</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">Fragile X (above 200), fragile XE (200) and Baratela-Scott syndrome (120) are CGG or CCG repeats in the region that controls the gene. The expanded repeat becomes methylated and the gene shuts down, which fits one mechanism with its own length requirement.</p>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">3</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">The glutamine cluster has two explanations</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">Ten CAG diseases in ten genes start at 32–55. Polyglutamine begins to aggregate near that length; the 2025 Cell paper reads 36–40 in Huntington's disease as the length at which the DNA repeat becomes unstable enough to reach 150 in a lifetime. Both depend on CAG length, so the histogram does not separate them.</p>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">4</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">Proteins respond to a few extra units</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">Alanine tracts cause disease with 4–10 extra residues (<i>RUNX2</i> 17 to 27, <i>PABPN1</i> 6–10 to 12); their repeats are stable and the diseases mostly congenital. Huntington's disease neurons show no detectable change from 36 to 150 CAGs, which fits toxicity arising at long lengths by another route.</p>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">5</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">SCA6 works without somatic expansion</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">SCA6 causes disease at 20–33 CAGs, and its repeat shows no mosaicism across brain regions or in sperm; a review rates its instability very low or absent, against high for SCA1, 2, 3 and 7. The glutamine diseases therefore include at least one that does not depend on expansion to a high threshold.</p>
+</div>
+
+<div style="background: #ffffff; border: 1px solid #e3ded3; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px"><div style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1d1d1b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700">6</div><h2 style="margin: 0; font-size: 17px; line-height: 24px; font-weight: 600">The long end reflects discovery history</h2></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 21px">The split between 30–120 and 200+ outside the coding sequence may shift as more repeats are found. Very long repeats were hard to detect before long-read sequencing, and most cutoffs of 200–680 belong to intronic repeats found with it since 2017.</p>
+</div>
+
+</div>
+
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5c5a55">Sources: Depienne and Mandel, Am J Hum Genet 2021 (lengths); Handsaker et al., Cell 2025; Mantuano et al., Cytogenet Genome Res 2003, citing Ishikawa et al. 1999 (brain) and Shizuka et al. 1998 (sperm) for SCA6 stability. Inferences 1–4 and 6 are drawn from the histogram and have not been tested.</p>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1520,"height":1480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

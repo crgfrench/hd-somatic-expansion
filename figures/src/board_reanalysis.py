@@ -1,5 +1,19 @@
-import json,sys
-D=json.load(open('/home/claude/gen/data.json'))
+"""The two per-gene onset panels of the re-analysis board.
+
+Takes the per-gene onset summary as JSON on the command line; it carries a
+"cand" list built by notebook 01. See data/PUT_INPUT_FILES_HERE.txt.
+
+This writes an SVG fragment, not a whole board. The fragment was pasted into
+the hand-written board beside it, which is the source of record the page is
+assembled from; the script is kept so the drawing can be regenerated.
+"""
+import os
+HERE = os.path.dirname(os.path.abspath(__file__))
+import json, sys
+SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'reanalysis_panels.json')
+if not os.path.exists(SRC):
+    raise SystemExit('need the onset summary JSON: pass it as the first argument (looked for %s)' % SRC)
+D = json.load(open(SRC))
 INK='#1d1d1b';Q='#5c5a55';GRID='#e4dfd4';RISE='#2f6db5';FALL='#d9822b';STR='#7b5ea7';CTX='#2a8a7e'
 o=[]
 def t(x,y,s,size=14,anchor='start',fill=INK,w=None,extra=''):
@@ -69,4 +83,6 @@ for i,(g,title,lo,hi,ticks) in enumerate(genes):
     for j,b in enumerate(blab):
         o.append(f'<text x="{X(j):.1f}" y="{Y0+PH+16}" text-anchor="end" font-size="11" fill="{Q}" transform="rotate(-40 {X(j):.1f} {Y0+PH+16})">{b}</text>')
 B=''.join(o)
-open('/home/claude/gen/A.svg','w').write(A);open('/home/claude/gen/B.svg','w').write(B)
+open(os.path.join(HERE, 'A.svg'), 'w').write(A)
+open(os.path.join(HERE, 'B.svg'), 'w').write(B)
+print('wrote A.svg and B.svg beside this script')

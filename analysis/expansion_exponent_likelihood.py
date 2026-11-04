@@ -98,7 +98,7 @@ for reg in ('striatum','cortex'):
     hi = max(c[1] for c in curve if c[0] > ll-1.92)
     print('          p 95%% interval %.2f to %.2f' % (lo, hi))
 
-np.save('/home/claude/hd/best.npy', np.array([best['striatum'][0], best['striatum'][1], best['striatum'][2],
+np.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'best.npy'), np.array([best['striatum'][0], best['striatum'][1], best['striatum'][2],
                                               best['cortex'][0],  best['cortex'][1],  best['cortex'][2]]))
 
 # ---- what the fitted model implies: years from inherited length to 150

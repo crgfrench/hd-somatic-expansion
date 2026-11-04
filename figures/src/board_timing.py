@@ -107,7 +107,7 @@ def panel_two_scatters():
         o.append(tx(x1, T - 20, eqn('CAGs added', 'Age' if line == 'age' else 'CAG', sl, ic), 14, INK, 'end'))
         o.append(tx(x1, T - 2, 'R² = %.2f' % r2, 13, MUT, 'end'))
     o.append(tx(0, 470, 'The flat panel is what blocks the measurement. Time leaves no mark on how far the repeat has travelled, so the two quantities a growth rate needs, distance and duration, cannot be separated in this material.', 14, INK))
-    o.append(tx(0, 494, 'Each donor keeps its colour on both panels, the colours running in spectral order by inherited length.', 14, MUT))
+    o.append(tx(0, 494, 'Each donor keeps its color on both panels, the colors running in spectral order by inherited length.', 14, MUT))
     o.append(tx(0, 516, 'The left line falls by less than one CAG per year of age and accounts for 5% of the difference between donors; the right line accounts for 35%.', 14, MUT))
     o.append('</svg>')
     return '\n'.join(o)
@@ -188,7 +188,7 @@ def panel_required():
     o.append(tx(L - 72, (T + B) / 2, 'Slowing required', 14, INK, 'middle')
              .replace('<text ', '<text transform="rotate(-90 %.1f %.1f)" ' % (L - 72, (T + B) / 2)))
     o.append(tx(0, 356, 'Silencing MSH3 by about 60% blocked measurable expansion in the striatum of BAC-CAG mice over the four months followed. A partial', 14, INK))
-    o.append(tx(0, 378, 'knockdown produced a near-complete stop there, so the percentages on this curve are slowing of the expansion itself, not a dose of knockdown.', 14, INK))
+    o.append(tx(0, 378, 'knockdown produced a near-complete stop there, so the percentages on this curve measure how much the expansion slows rather than how much enzyme is removed.', 14, INK))
     o.append(tx(0, 400, 'Read against the curve: ten years of delay takes 29% slowing if it begins at age 30, 42% at 40 and 71% at 50.', 14, MUT))
     o.append('</svg>')
     return '\n'.join(o)
@@ -224,7 +224,7 @@ body{{margin:0}}
 
 {panel_required()}
 
-<p style="margin: 0; font-size: 12px; line-height: 18px; color: {MUT}">Sources: donor records and per-nucleus repeat lengths, Kashin, Lee et al., <i>Cell</i> 2026 (Zenodo record 18202664). Expected onset from the CAG-Age Product, Warner et al. 2020. MSH3 silencing in mice: O&#8217;Reilly et al., <i>Molecular Therapy</i> 31:1661, 2023; the four-month figures are read from the bioRxiv preprint of that paper. The delay and slowing curves are arithmetic on the onset formula, not fitted to data.</p>
+<p style="margin: 0; font-size: 12px; line-height: 18px; color: {MUT}">Sources: donor records and per-nucleus repeat lengths, Kashin, Lee et al., <i>Cell</i> 2026 (Zenodo record 18202664). Expected onset from the CAG-Age Product, Warner et al. 2020. MSH3 silencing in mice: O&#8217;Reilly et al., <i>Molecular Therapy</i> 31:1661, 2023; the four-month figures are read from the bioRxiv preprint of that paper. The delay and slowing curves are arithmetic on the onset formula and were never fitted to data.</p>
 
 </div>
 </x-dc>

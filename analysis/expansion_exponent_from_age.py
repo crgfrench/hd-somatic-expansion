@@ -83,7 +83,7 @@ for reg in ('striatum', 'cortex'):
                   % (100*q, k, sd))
     print()
 
-np.save('/home/claude/hd/fit4.npy', np.array([out['striatum'][0], out['cortex'][0]]))
+np.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fit4.npy'), np.array([out['striatum'][0], out['cortex'][0]]))
 
 print('implied years from the inherited length to 150 CAGs')
 for reg in ('striatum', 'cortex'):

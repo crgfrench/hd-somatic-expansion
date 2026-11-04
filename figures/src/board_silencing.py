@@ -87,7 +87,7 @@ def panel_a():
         last = A[-1]
         o.append(tx(xs(last['mid']) + 12, ys(last['HOX' + cl]) + 4, 'HOX' + cl, 13, CLUS[cl], w=600))
     ls, y = para(0, 424, 'Flat and on top of one another below 140 copies, lifting together in the 140 to 159 band, then climbing a hundredfold in parallel. '
-                         'One threshold shared by all four clusters is a switch thrown at the level of the silencing system, not four domains failing on their own.', 14, INK)
+                         'One threshold shared by all four clusters is a switch thrown at the level of the silencing system, where four domains failing on their own would stagger.', 14, INK)
     o += ls
     ls, _ = para(0, y + 6, 'The vertical scale is logarithmic. Rates are transcripts of the cluster divided by all transcripts counted in those nuclei.', 13)
     o += ls

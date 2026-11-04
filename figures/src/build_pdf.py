@@ -44,7 +44,12 @@ for k, d in enumerate(divs):
     pages.append((p, h))
 json.dump(pages, open(os.path.join(TMP, 'pages.json'), 'w'))
 
-subprocess.run(['node', os.path.join(HERE, 'build_pdf.js'), TMP], check=True)
+try:
+    subprocess.run(['node', os.path.join(HERE, 'build_pdf.js'), TMP], check=True)
+except subprocess.CalledProcessError:
+    raise SystemExit('the PDF step needs Node with Playwright and a browser installed:\n'
+                     '    npm install playwright && npx playwright install chromium\n'
+                     'The HTML page is built by build_standalone_page.py and needs neither.')
 
 w = PdfWriter()
 for k, (_, h) in enumerate(pages):

@@ -1,3 +1,14 @@
+"""The two drawn expansion panels of the first board.
+
+The curves are drawn from a stated growth rule rather than fitted to data,
+which the board caption says.
+
+This writes an SVG fragment, not a whole board. The fragment was pasted into
+the hand-written board beside it, which is the source of record the page is
+assembled from; the script is kept so the drawing can be regenerated.
+"""
+import os
+HERE = os.path.dirname(os.path.abspath(__file__))
 import math, random
 
 INK='#1d1d1b'; Q='#5c5a55'; GRID='#e4dfd4'; BLUE='#2f6db5'; ORANGE='#d9822b'; ACC='#4f7a4a'
@@ -66,7 +77,7 @@ legend=(f'<line x1="0" y1="436" x2="26" y2="436" stroke="{ACC}" stroke-width="3"
         f'<text x="34" y="440" font-size="13" fill="{INK}">Dashed green line, right-hand scale: the share of that person’s neurons that have passed 150 by that age</text>')
 foot=(f'<text x="0" y="466" font-size="13" fill="{Q}">Shaded band: the slow phase, up to about 90 repeats. Each line is one neuron. The shapes and the spread follow the two-stage dynamic the two papers describe; the paths are drawn, not measured.</text>'
       f'<text x="0" y="486" font-size="13" fill="{Q}">Expected age at diagnosis is 649/(CAG−30) years, from the CAG-Age Product as Enroll-HD standardizes it (CAP = 100 at the expected age of diagnosis; Warner et al. 2020).</text>')
-open('panel.svg','w').write(head+a+b+legend+foot)
+open(os.path.join(HERE, 'panel.svg'), 'w').write(head+a+b+legend+foot)
 
 # ---- third chart: accumulation only, six starting lengths
 CW=1392; CH=330; cY0=66; cPH=210
@@ -96,5 +107,5 @@ o.append(f'<text x="{(100+CW-100)/2:.1f}" y="{Y(0)+42:.1f}" text-anchor="middle"
 o.append(f'<text x="34" y="{cY0+cPH//2}" transform="rotate(-90 34 {cY0+cPH//2})" text-anchor="middle" font-size="13" fill="{INK}">Share of neurons past 150</text>')
 o.append(f'<text x="0" y="{cY0+cPH+68}" font-size="13" fill="{Q}">Dots mark the expected age at diagnosis, 649/(CAG−30) years. The curves follow from the drawn expansion speeds and are not fitted to onset data; that they put diagnosis at a similar share in all three cases is a</text>')
 o.append(f'<text x="0" y="{cY0+cPH+88}" font-size="13" fill="{Q}">consequence of the drawn model, not evidence for it. Lengths of 36 to 39 are shown here as stable, though in that range the disease sometimes appears late in life.</text>')
-open('panel2.svg','w').write(''.join(o))
+open(os.path.join(HERE, 'panel2.svg'), 'w').write(''.join(o))
 print(ca,cb,[round(share(L,onset(L))*100) for L in (40,42,50,60)])

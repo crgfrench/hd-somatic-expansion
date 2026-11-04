@@ -1,7 +1,8 @@
 // Evaluate Main.dc.html's renderVals() outside the canvas runtime and print its
 // result, so the standalone page can carry the disease table as plain markup.
 const fs = require('fs');
-const P = '/tmp/claude-0/-home-claude/c597d61d-b908-51d6-86bf-6a3ff3524319/scratchpad/canvas/project/Main.dc.html';
+const path = require('path');
+const P = process.argv[2] || path.join(__dirname, 'Main.dc.html');
 const s = fs.readFileSync(P, 'utf8');
 
 const open = s.indexOf('renderVals()');

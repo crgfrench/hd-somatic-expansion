@@ -6,7 +6,7 @@ order with its phase D members filled.
 
 Two cautions are written into the panel because the result is easy to misread:
 
-1. The counts come from the gene-family test, not from the spatial test. A
+1. The counts come from the gene-family test rather than from the spatial test below. A
    spatial null drawn from every gene in the statistics file is wrong here,
    because the phase sets have a median abundance of about 190 transcripts per
    million against 17 for all tested genes, and clustered paralog families are
@@ -23,8 +23,7 @@ Reanalysis.dc.html, so it can be run again after the data change.
 import json, re, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOARD = sys.argv[1] if len(sys.argv) > 1 else (
-    '/tmp/claude-0/-home-claude/c597d61d-b908-51d6-86bf-6a3ff3524319/scratchpad/canvas/project/Reanalysis.dc.html')
+BOARD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'Reanalysis.dc.html')
 D = json.load(open(os.path.join(HERE, 'hox_clusters.json')))
 
 INK, MUT, GRID, BLUE, PALE = '#1d1d1b', '#5c5a55', '#e4dfd4', '#2f6db5', '#9bb9dc'
@@ -90,8 +89,8 @@ ls, cy = para(0, cy, 'Set the clusters aside and the remaining phase D genes are
                      'being neighbours. Polycomb targets lie all over the genome; HOX is where they sit in a row.', 13, INK)
 o += ls
 ls, cy = para(0, cy + 8, 'The clusters bring their own long non-coding RNAs with them: HOTAIRM1, HOTTIP, HOXA-AS2, HOXD-AS2 and HOXB-AS1 all reach phase D. Scored in the '
-                         'nuclei themselves rather than per donor, HOX expression runs at 0.33 transcripts per million below 100 CAGs and 33 above 260, carried by 1.2% of nuclei '
-                         'and then by 23% of them.')
+                         'nuclei themselves rather than per donor, HOX expression runs at 0.33 transcripts per million below 100 CAGs and 33 above 260, present in 1.2% of nuclei '
+                         'and then in 23% of them.')
 o += ls
 ls, cy = para(0, cy + 8, 'Counted by gene family. A spatial test is not used for these genes: the phase sets run near 190 transcripts per million against 17 for all tested genes, '
                          'so a null drawn from every gene is mis-matched, and matching on abundance drops all 11 HOX genes, which sit below the 1 TPM floor of the abundance table.')
