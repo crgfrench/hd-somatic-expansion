@@ -265,7 +265,8 @@ def panel_null():
     o.append('<circle cx="%.1f" cy="%.1f" r="5.5" fill="%s" stroke="%s" stroke-width="2"/>'
              % (fx, B, ORANGE, BG))
     o.append(tx(fx + 12, T + 26, 'FAN1,  rho = %+.2f' % FAN1_RHO, 15, ORANGE, w=700))
-    o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}' + ' — no gene reaches it, and its own bar is one gene tall', 13, INK))
+    o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}', 13, INK))
+    o.append(tx(fx + 12, T + 68, 'no gene reaches it, and its own bar is one gene tall', 13, INK))
     ls, y = para(0, 410, 'Narrowed to the 1,935 genes of FAN1’s own abundance, within a factor of 1.3 either way, none reaches it either. '
                          'The figure is not what this many donors and this many genes throw up by chance.', 14, INK)
     o += ls
