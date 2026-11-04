@@ -106,8 +106,8 @@ def panel_two_scatters():
         o.append(tx(x1, T - 42, 'rho = %s,  p = %s' % (rho, pv), 15, INK, 'end', w=600))
         o.append(tx(x1, T - 20, eqn('CAGs added', 'Age' if line == 'age' else 'CAG', sl, ic), 14, INK, 'end'))
         o.append(tx(x1, T - 2, 'R² = %.2f' % r2, 13, MUT, 'end'))
-    o.append(tx(0, 470, 'The flat panel is what blocks the measurement. Time leaves no mark on how far the repeat has travelled, so the two quantities a growth rate needs, distance and duration, cannot be separated in this material.', 14, INK))
-    o.append(tx(0, 494, 'Each donor keeps its color on both panels, the colors running in spectral order by inherited length.', 14, MUT))
+    o.append(tx(0, 470, 'A growth rate is distance divided by time. The distance is the vertical axis of both panels, and the time is measured by the donor’s age.', 14, INK))
+    o.append(tx(0, 494, 'The left panel shows age predicting nothing about how far the repeat moved, so this group yields no rate. The length a donor inherited predicts it instead, on the right.', 14, MUT))
     o.append(tx(0, 516, 'The left line falls by less than one CAG per year of age and accounts for 5% of the difference between donors; the right line accounts for 35%.', 14, MUT))
     o.append('</svg>')
     return '\n'.join(o)
@@ -193,7 +193,7 @@ def panel_required():
     o.append('</svg>')
     return '\n'.join(o)
 
-HEIGHT = 2432
+HEIGHT = 2460
 page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -212,6 +212,7 @@ body{{margin:0}}
 <div style="width: 1520px; height: {HEIGHT}px; box-sizing: border-box; padding: 64px; background: {BG}; color: {INK}; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 36px">
 
 <div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8679">Board 5 of 7</div>
 <h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">How fast the repeat grows, and what slowing it would buy</h1>
 <p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">Donor records released with the 2026 cortex paper (Zenodo record 18202664): age at death, the repeat length inherited on the affected copy of <i>HTT</i>, and per-nucleus repeat lengths in cortical neurons for 11 of the donors. Expected onset ages are 649/(CAG&#8722;30) years, the Enroll-HD calibration of the CAG-Age Product.</p>
 </div>

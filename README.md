@@ -58,7 +58,8 @@ enrichment resting on three genes.
 
 Whether the phase C and phase D gene sets are bunched along the chromosome,
 which a domain-level failure of polycomb silencing would produce. The answer is
-specific rather than general: 11 of the 23 HOX genes in the cortex statistics
+specific rather than general: 11 of the 23 genes named HOXA to HOXD with a
+paralog number in the cortex statistics
 are phase D genes against 0.22 expected, all four clusters with their embedded
 lncRNAs, and 4 of 17 in the striatum against 0.54. The only other multi-gene run
 is MEG3 with MEG8 at the imprinted DLK1-DIO3 locus. Set the clusters aside and
@@ -89,32 +90,48 @@ the limits, including the reverse-causation problem a post-mortem snapshot canno
 Four tests on the per-nucleus data, each scoring a nucleus by the repeat it
 carries rather than by the donor it came from.
 
-**A.** All four HOX clusters come on together. Flat below 140 CAGs, lifting in
-the 140–159 band, then a hundredfold climb in parallel, from 0.33 to 33
-transcripts per million. One threshold shared by four clusters is a switch
-thrown at the level of the silencing system rather than four domains failing
-separately, and it lands on the 150 both papers identify.
+**A.** All four HOX clusters are above their own baseline across 140–199 CAGs.
+Each cluster is taken relative to its own rate below 100 copies, since HOXD's
+baseline is four times the others and an absolute scale reads that difference as
+a difference in onset. Pooled over 140–199 the factors are 3.7, 2.0, 5.3 and 6.5
+for HOXA to HOXD, on 27, 9, 25 and 121 transcripts, each above 1 at p = 1.6e-08,
+0.04, 4.1e-11 and 1.1e-55; beyond 260 all four run 50 to 130 times baseline.
+Four polycomb domains lifting inside one 60-copy window, which contains the 150
+both papers identify, is what a failure of the shared silencing would produce. A
+common onset length is past what these counts can settle: the four factors differ
+from one another at p = 0.0001, and the two bands where HOXB records nothing
+expected 1.5 transcripts to begin with.
+
+Panel A plots fold change for that reason, and `figures/src/hox_cluster_bands.json`
+holds the per-cluster transcript counts by band that it draws.
 
 **B.** At a fixed repeat length, a nucleus's HOX level still tracks how far it
 has gone in phase C: past 230 CAGs, rho = +0.32 with the rising genes and −0.25
 with the identity genes, holding the released control gene set, read depth and
 repeat length constant, on 891 nuclei. The control set is what separates this
 from a drift in transcriptome quality — across the same bands it moves +0.13
-while the identity genes move −0.34. Phase C and phase D are therefore not two
-clocks both reading off repeat length.
+while the identity genes move −0.34. Phase C and phase D therefore advance together rather than
+as two clocks both reading off repeat length, though a correlation of this kind
+leaves open whether one process drives both.
 
 **C.** The MutSβ-to-FAN1 balance does not predict expansion between cell types
 of one person, though it appears to between people. Measured only in nuclei
 whose repeat has moved under 10 copies, and compared across subtypes inside a
-donor, the mean correlation is −0.20 over six donors, which is the sign the
-mechanism forbids; in the one donor whose subtypes span a wide range of
+donor, the mean correlation is −0.20 over six donors, opposite to the sign
+the mechanism predicts; in the one donor whose subtypes span a wide range of
 expansion it is −0.28 at p = 0.0005, with subtype size explaining neither
 variable. This was meant to answer the sample size behind the FAN1 result and
-does not.
+does not. Two features of the design limit what the null result rules out.
+Restricting the measurement to barely expanded nuclei samples a different
+fraction of each subtype, since in a fast-expanding subtype those nuclei are its
+stragglers. And cell types differ in chromatin state, transcription rate and
+much else, so the comparison credits MutSβ and FAN1 with whatever those other
+differences do.
 
 **D.** The two regions derepress the same genes at different repeat lengths.
-Across the 42 HOX genes measured in both, levels in heavily expanded nuclei
-correlate at rho = +0.86. But at 140–199 CAGs the cortex sits at 5.2 times its
+Across the 42 HOX genes present in both expression matrices — the 39 named
+HOXA to HOXD with a paralog number, plus HOXA10-AS, HOXA11-AS and HOXC13-AS —
+levels in nuclei carrying 260 copies or more correlate at rho = +0.86. But at 140–199 CAGs the cortex sits at 5.2 times its
 own baseline (p = 3 × 10⁻⁶⁸) while the striatum sits at 0.46 — and that striatal
 band holds 18 million transcripts, enough that a cortex-sized rise would have
 shown about 75 HOX counts where 7 were seen. Both reach the same place past 260
@@ -181,10 +198,15 @@ Each generator reads a JSON file beside it that an analysis script wrote, so the
 drawings follow from the data rather than being redrawn by hand: `board_timing.py`
 from `donor_table.json`, `board_fan1.py` from `repair_genes.json` as written by
 `analysis/expression/repair_genes_vs_expansion.py`, `board_silencing.py` from
-`silencing_data.json` as written by `analysis/silencing_tests.py`, and
+`silencing_data.json` as written by `analysis/silencing_tests.py` together with
+`hox_cluster_bands.json`, and
 `panel_hox.py` from `hox_clusters.json` as written by
 `analysis/phase_gene_clustering.py`, rewriting the region between the
-`hox:start` and `hox:end` markers in the re-analysis board. Assembling the
+`hox:start` and `hox:end` markers in the re-analysis board. That panel orders the
+genes within each cluster by paralog number, which is the order they occupy on
+the chromosome, rather than by the annotation start: the gene table keeps one row
+per symbol, and for HOXC6 that row belongs to an upstream isoform whose start
+falls between HOXC10 and HOXC9. Assembling the
 page needs Python and Node; the PDF step also needs Playwright with a browser
 (`npm install playwright && npx playwright install chromium`). Running it this
 way reproduces `figures/Repeat_Disease_Thresholds.html` byte for byte.

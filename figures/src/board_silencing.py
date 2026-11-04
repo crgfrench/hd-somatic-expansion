@@ -1,11 +1,15 @@
 """Build the seventh board: four tests of when the silencing fails.
 
-Input is data.json, written by the four analyses. Output is Silencing.dc.html.
+Inputs are silencing_data.json, written by the four analyses, and
+hox_cluster_bands.json, the per-cluster transcript counts by repeat-length band
+that panel A plots as a fold change over each cluster's own baseline below 100
+copies. Output is Silencing.dc.html.
 """
 import json, math, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = json.load(open(os.path.join(HERE, 'silencing_data.json')))
+PA = json.load(open(os.path.join(HERE, 'hox_cluster_bands.json')))
 PROJ = HERE + os.sep
 
 BG, INK, MUT, GRID = '#fbfaf7', '#1d1d1b', '#5c5a55', '#e4dfd4'
@@ -59,44 +63,104 @@ def svg(W, H, label, body):
 
 # ---------------------------------------------------------------- panel A
 def panel_a():
-    W, H = 1392, 516
-    L, R, T, B = 110, 1340, 92, 340
-    A = D['A']
-    xs = lambda v: L + (v - 36) / (360 - 36) * (R - L)
-    lo, hi = 0.2, 60.0
+    W, H = 1392, 606
+    L, R, T, B = 110, 856, 100, 372
+    A = PA['bands']
+    PO = PA['pooled']
+    xs = lambda v: L + (v - 36) / (330 - 36) * (R - L)
+    lo, hi = 0.35, 220.0
     ys = lambda v: B - (math.log10(max(v, lo)) - math.log10(lo)) / (math.log10(hi) - math.log10(lo)) * (B - T)
     o = []
-    o.append(tx(0, 24, 'All four HOX clusters come on together, at the repeat length the papers already call the threshold', 19, INK, w=600))
-    o.append(tx(0, 46, 'Each nucleus scored by its own repeat length rather than by its donor. 78,855 cortical neurons.', 14))
-    for v in (0.3, 1, 3, 10, 30):
+    o.append(tx(0, 24, 'All four HOX clusters are above their own baseline from 140 copies, by factors of 2 to 6.5', 19, INK, w=600))
+    ls, _ = para(0, 46, 'Each nucleus scored by its own repeat length rather than by its donor, across 78,855 cortical neurons. Each cluster is divided by its own rate below '
+                        '100 copies, so the four curves start at 1 and height on the chart is a fold change rather than an abundance.', 14, maxw=1240)
+    o += ls
+    for v in (0.5, 1, 2, 5, 10, 20, 50, 100, 200):
         o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (L, ys(v), R, ys(v), GRID))
-        o.append(tx(L - 10, ys(v) + 4, ('%g' % v), 12, MUT, 'end'))
-    for v in (50, 100, 150, 200, 250, 300, 350):
+        o.append(tx(L - 10, ys(v) + 4, ('%g×' % v), 12, MUT, 'end'))
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.6"/>'
+             % (L, ys(1), R, ys(1), SLATE))
+    o.append(tx(R - 2, ys(1) - 8, 'baseline below 100 copies', 12, SLATE, 'end'))
+    for v in (50, 100, 150, 200, 250, 300):
         o.append(tx(xs(v), B + 24, str(v), 12, MUT, 'middle'))
     o.append(tx((L + R) / 2, B + 52, 'CAG repeat length in that nucleus', 14, INK, 'middle'))
-    o.append(tx(42, (T + B) / 2, 'HOX transcripts per million', 14, INK, 'middle')
-             .replace('<text ', '<text transform="rotate(-90 42 %.1f)" ' % ((T + B) / 2)))
+    o.append(tx(40, (T + B) / 2, 'HOX rate, relative to that cluster below 100 copies', 13, INK, 'middle')
+             .replace('<text ', '<text transform="rotate(-90 40 %.1f)" ' % ((T + B) / 2)))
     o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.5" stroke-dasharray="5 4"/>'
-             % (xs(150), T - 18, xs(150), B, SLATE))
-    o.append(tx(xs(150) + 8, T - 6, '150 CAGs', 13, INK, w=600))
+             % (xs(150), T - 22, xs(150), B, SLATE))
+    o.append(tx(xs(150) + 8, T - 8, '150 CAGs', 13, INK, w=600))
     for cl in 'ABCD':
-        pts = ' '.join('%.1f %.1f' % (xs(r['mid']), ys(r['HOX' + cl])) for r in A)
-        o.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2.5"/>' % (pts, CLUS[cl]))
+        k = 'HOX' + cl
+        seg, zer = [], []
         for r in A:
-            o.append('<circle cx="%.1f" cy="%.1f" r="4" fill="%s"/>' % (xs(r['mid']), ys(r['HOX' + cl]), CLUS[cl]))
-        last = A[-1]
-        o.append(tx(xs(last['mid']) + 12, ys(last['HOX' + cl]) + 4, 'HOX' + cl, 13, CLUS[cl], w=600))
-    ls, y = para(0, 424, 'Flat and on top of one another below 140 copies, lifting together in the 140 to 159 band, then climbing a hundredfold in parallel. '
-                         'One threshold shared by all four clusters is a switch thrown at the level of the silencing system, where four domains failing on their own would stagger.', 14, INK)
+            (zer if r[k + '_u'] == 0 else seg).append(r)
+        runs, cur = [], []
+        for r in A:
+            if r[k + '_u'] == 0:
+                if cur:
+                    runs.append(cur); cur = []
+            else:
+                cur.append(r)
+        if cur:
+            runs.append(cur)
+        for run in runs:
+            if len(run) > 1:
+                pts = ' '.join('%.1f %.1f' % (xs(r['mid']), ys(r[k])) for r in run)
+                o.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2.5"/>' % (pts, CLUS[cl]))
+        for r in seg:
+            o.append('<circle cx="%.1f" cy="%.1f" r="4" fill="%s"/>' % (xs(r['mid']), ys(r[k]), CLUS[cl]))
+        for r in zer:
+            o.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s" stroke="%s" stroke-width="1.6"/>'
+                     % (xs(r['mid']), ys(lo), BG, CLUS[cl]))
+    ends = sorted((('HOX' + cl, ys(A[-1]['HOX' + cl]), CLUS[cl]) for cl in 'ABCD'), key=lambda t: t[1])
+    placed = []
+    for nm, yy, col in ends:
+        if placed and yy - placed[-1] < 17:
+            yy = placed[-1] + 17
+        placed.append(yy)
+        o.append(tx(xs(A[-1]['mid']) + 12, yy + 4, nm, 13, col, w=600))
+    o.append(tx(L + 16, ys(0.44), 'hollow circles: no HOXB transcript in that band,', 12, CLUS['B']))
+    o.append(tx(L + 16, ys(0.44) + 16, 'against the 1.5 its baseline predicts', 12, CLUS['B']))
+
+    # right block: the pooled 140-199 estimate, which is what the claim rests on
+    X0 = 940
+    o.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s"/>' % (X0 - 40, T - 34, X0 - 40, B + 40, GRID))
+    o.append(tx(X0, T - 12, 'Pooled over 140 to 199 copies', 15, INK, w=600))
+    o.append(tx(X0, T + 8, '%d nuclei, %.0f million transcripts' % (PO['n'], PO['umis'] / 1e6), 13))
+    bl, br = X0 + 160, 1356
+    fs = lambda v: bl + (math.log10(max(v, 0.7)) - math.log10(0.7)) / (math.log10(11) - math.log10(0.7)) * (br - bl)
+    for v in (1, 2, 5, 10):
+        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (fs(v), T + 30, fs(v), T + 178, GRID))
+        o.append(tx(fs(v), T + 196, '%g×' % v, 12, MUT, 'middle'))
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.6"/>'
+             % (fs(1), T + 30, fs(1), T + 178, SLATE))
+    for i, cl in enumerate('ABCD'):
+        p = PO['HOX' + cl]
+        yy = T + 52 + i * 34
+        o.append(tx(X0, yy + 4, 'HOX' + cl, 13, CLUS[cl], w=600))
+        o.append(tx(X0 + 136, yy + 4, '%d transcripts' % p['obs'], 12, MUT, 'end'))
+        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2"/>'
+                 % (fs(p['lo']), yy, fs(min(p['hi'], 11)), yy, CLUS[cl]))
+        o.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"/>' % (fs(p['fold']), yy, CLUS[cl]))
+        o.append(tx(fs(min(p['hi'], 11)) + 8, yy + 4, '%.1f×' % p['fold'], 12, CLUS[cl], w=600))
+    o.append(tx(X0, T + 222, 'Each estimate is above 1 (p = 1.6e-08, 0.04, 4.1e-11, 1.1e-55).', 13, INK))
+    o.append(tx(X0, T + 242, 'The four factors differ from each other: p = %.4f on 3 degrees' % PO['het_p'], 13, MUT))
+    o.append(tx(X0, T + 260, 'of freedom, so a single common factor of %.1f× is rejected.' % PO['common'], 13, MUT))
+
+    ls, y = para(0, B + 110, 'Below 140 copies the four clusters sit at their own baselines. Across 140 to 199 copies every one of them is above that baseline, and by 200 all '
+                             'four are up fifteenfold or more. Four domains rising in the same 60-copy window is what a failure of the shared silencing system would produce, and the '
+                             'window contains the 150 copies the original papers identify.', 14, INK)
     o += ls
-    ls, _ = para(0, y + 6, 'The vertical scale is logarithmic. Rates are transcripts of the cluster divided by all transcripts counted in those nuclei.', 13)
+    ls, y = para(0, y + 8, 'A common onset length is beyond what these counts can establish. The 140 to 199 range holds 9 to 121 transcripts per cluster, the estimated factors '
+                           'range from 2.0 to 6.5, and the two bands where HOXB records nothing expected only 1.5 transcripts to begin with. The evidence places all four clusters '
+                           'above baseline inside one window; it leaves the order within that window open.', 13)
     o += ls
-    return svg(W, H, 'HOX expression against repeat length for the four clusters, cortex', o)
+    return svg(W, H, 'HOX rate against repeat length for the four clusters, as a fold change over each cluster own baseline, cortex', o)
 
 
 # ---------------------------------------------------------------- panel B
 def panel_b():
-    W, H = 1392, 470
+    W, H = 1392, 496
     L, R, T, B = 110, 900, 96, 320
     Bd = D['B']
     xs = lambda v: L + (v - 100) / (360 - 100) * (R - L)
@@ -137,17 +201,18 @@ def panel_b():
     o.append(tx(984, 290, 'The control line staying flat is what', 13, MUT))
     o.append(tx(984, 308, 'rules out a general drift in quality.', 13, MUT))
 
-    ls, y = para(0, 384, 'Two neurons carrying the same number of repeats are not at the same point. The one that has lost more of its identity is the one whose HOX clusters have opened, '
+    ls, y = para(0, 406, 'Two neurons carrying the same number of repeats can sit at different points. The one that has lost more of its identity is the one whose HOX clusters have opened, '
                          'and the coupling strengthens as the repeat lengthens.', 14, INK)
     o += ls
-    ls, _ = para(0, y + 6, 'So phase C and phase D are not two clocks both reading off repeat length. Repeat length sets the pressure; something else sets how far a given cell has travelled under it.', 13)
+    ls, _ = para(0, y + 6, 'So phase C and phase D advance together. A within-band correlation establishes that the two are coupled, and it leaves open whether one process drives '
+                           'both. Repeat length sets the pressure; something else sets how far a given cell has traveled under it.', 13)
     o += ls
     return svg(W, H, 'Correlation of HOX expression with the phase C scores, within repeat-length bands', o)
 
 
 # ---------------------------------------------------------------- panel C
 def panel_c():
-    W, H = 1392, 470
+    W, H = 1392, 556
     C = D['C']
     L, R, T, B = 110, 720, 92, 320
     xs = lambda v: L + (v - 3) / (11 - 3) * (R - L)
@@ -176,7 +241,7 @@ def panel_c():
     o.append(tx(R, T + 44, 'rho %+.2f, p = %.0e' % (C['rho'], C['p']), 15, ORANGE, 'end', w=700))
     o.append(tx(R, T + 66, eqn('CAGs added', 'ratio', sl, ic), 14, INK, 'end'))
     o.append(tx(R, T + 84, 'R² = %.2f' % r2, 13, MUT, 'end'))
-    o.append(tx(R, T + 104, 'the sign the mechanism forbids', 13, MUT, 'end'))
+    o.append(tx(R, T + 104, 'opposite to the predicted sign', 13, MUT, 'end'))
 
     # the six donors as a strip
     SL, SR, SY = 860, 1340, 200
@@ -193,24 +258,32 @@ def panel_c():
     o.append(tx(SL, SY + 92, 'mechanism predicts; two of six land there, mean %+.2f.'
                 % (sum(d['rho'] for d in C['donors']) / len(C['donors'])), 13, MUT))
 
-    ls, y = para(0, 402, 'More MutSβ relative to FAN1 should mean a repeat that travels further. Across cell types of one person it means the opposite, or nothing. '
-                         'The association between donors on the FAN1 board is therefore not explained by a cell-autonomous dose of these enzymes.', 14, INK)
+    ls, y = para(0, 410, 'More MutSβ relative to FAN1 should mean a repeat that travels further. Across cell types of one person it means the opposite, or nothing. '
+                         'The association between donors on board 6 therefore holds without a cell-autonomous dose of these enzymes behind it.', 14, INK)
+    o += ls
+    ls, y = para(0, y + 8, 'Two features of the design limit what a null result here can rule out. Restricting the measurement to barely expanded nuclei samples a different '
+                           'fraction of each subtype: in a subtype that expands quickly those nuclei are its stragglers, so the ratio is read off an unrepresentative slice of exactly '
+                           'the cell types the comparison is meant to rank. And cell types differ in chromatin state, transcription rate, repeat-containing allele expression and much '
+                           'else, so a between-subtype comparison attributes to MutSβ and FAN1 whatever those other differences do.', 13)
     o += ls
     return svg(W, H, 'MutS beta to FAN1 ratio against expansion across cortical subtypes', o)
 
 
 # ---------------------------------------------------------------- panel D
 def panel_d():
-    W, H = 1392, 544
+    W, H = 1392, 608
     G = D['D_genes']; BARS = D['D_bars']
-    L, R, T, B = 110, 620, 96, 330
+    L, R, T, B = 110, 620, 152, 386
     lo, hi = 0.02, 20.0
     f = lambda v: (math.log10(max(v, lo)) - math.log10(lo)) / (math.log10(hi) - math.log10(lo))
     xs = lambda v: L + f(v) * (R - L)
     ys = lambda v: B - f(v) * (B - T)
     o = []
     o.append(tx(0, 24, 'The two regions switch on the same genes, and they do it at different repeat lengths', 19, INK, w=600))
-    o.append(tx(0, 46, 'Left: every HOX gene measured in both, at its level in heavily expanded nuclei. Right: how much each region has moved from its own baseline.', 14))
+    ls, _ = para(0, 46, 'Left: each of the 42 HOX genes present in both expression matrices, at its level in nuclei carrying 260 copies or more. These are the 39 genes named '
+                        'HOXA to HOXD with a paralog number, plus HOXA10-AS, HOXA11-AS and HOXC13-AS; board 4 instead counts the 23 of them that the cortex paper’s own per-gene '
+                        'statistics cover. Right: how much each region has moved from its own baseline.', 14)
+    o += ls
     for v in (0.1, 1, 10):
         o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (L, ys(v), R, ys(v), GRID))
         o.append(tx(L - 10, ys(v) + 4, '%g' % v, 12, MUT, 'end'))
@@ -238,8 +311,8 @@ def panel_d():
     o.append(tx(R - 6, B - 18, 'R² = %.2f, fitted on the logarithms' % gr2, 12, MUT, 'end'))
 
     # bars
-    BL, BR, BB, BT = 760, 1340, 330, 110
-    o.append(tx(BL, 76, 'Movement from each region’s own baseline', 15, INK, w=600))
+    BL, BR, BB, BT = 760, 1340, 386, 166
+    o.append(tx(BL, 132, 'Movement from each region’s own baseline', 15, INK, w=600))
     yb = lambda v: BB - (math.log10(max(v, 0.3)) - math.log10(0.3)) / (math.log10(200) - math.log10(0.3)) * (BB - BT)
     for v in (1, 10, 100):
         o.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s"/>' % (BL, yb(v), BR, yb(v), GRID))
@@ -259,19 +332,19 @@ def panel_d():
             o.append(tx(x + gw / 2, BB + 22, bar['region'], 12, col, 'middle', w=600))
         o.append(tx(x0 + i * 280 + gw + 8, BB + 44, lab + ' CAGs', 13, INK, 'middle', w=600))
 
-    ls, y = para(0, 418, 'The genes agree: the same clusters lead in both regions, HOXD3, HOXD10 and HOXC4 at the top of each, and the fitted line runs at a slope of 1.01, so close to '
+    ls, y = para(0, 474, 'The genes agree: the same clusters lead in both regions, HOXD3, HOXD10 and HOXC4 at the top of each, and the fitted line runs at a slope of 1.01, so close to '
                          'equal levels that the two are hard to separate. The timing does not agree. A cortical neuron opens its HOX clusters as soon as it passes about 150 copies; '
                          'a striatal neuron at the same length has not moved.', 14, INK)
     o += ls
     ls, y = para(0, y + 6, 'The 140 to 199 band holds 18 million striatal transcripts, enough that a rise the size of the cortex’s would have shown about 75 HOX counts where 7 were seen, so this is a '
-                           'real difference rather than a thin sample. The region whose repeats travel fastest tolerates a given length best.')
+                           'real difference rather than a thin sample. One reading of it, and a reading rather than a result: the region whose repeats travel fastest tolerates a given length best.')
     o += ls
     ls, _ = para(0, y + 6, 'Both regions reach the same place eventually, 102 times baseline in the cortex and 61 in the striatum past 260 copies.', 13)
     o += ls
     return svg(W, H, 'HOX genes compared between regions, and the thresholds at which each region moves', o)
 
 
-HEIGHT = 2532
+HEIGHT = 2700
 page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -290,6 +363,7 @@ body{{margin:0}}
 <div style="width: 1520px; height: {HEIGHT}px; box-sizing: border-box; padding: 64px; background: {BG}; color: {INK}; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 30px">
 
 <div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: {SLATE}">Board 7 of 7</div>
 <h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">When the silencing fails, and what sets the timing</h1>
 <p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">Four tests on the single-nucleus data released with the two papers, scoring each nucleus by its own repeat length rather than by the donor it came from. Three concern the HOX clusters, the polycomb-silenced genes that board 4 shows derepressing in phase D; the fourth returns to the repair genes of board 6.</p>
 </div>
@@ -316,5 +390,5 @@ class Component extends DCLogic {{
 </body>
 </html>
 """
-open(os.path.join(PROJ, 'Silencing.dc.html'), 'w').write(page)
+open(PROJ + 'Silencing.dc.html', 'w').write(page)
 print('wrote Silencing.dc.html', len(page), 'bytes')

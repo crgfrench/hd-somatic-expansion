@@ -160,7 +160,7 @@ def panel_mechanism():
         o.append(tx(x0 + 24, 404, tail, 14, INK, w=600))
         o.append(tx(end + 14, 365, '%d triplets' % n_end, 12, MUT))
 
-    ls, y = para(0, 462, 'The two are not independent: FAN1 also inhibits MutLγ, the nuclease MutSβ needs to make the nick, so it restrains the '
+    ls, y = para(0, 462, 'The two interact: FAN1 also inhibits MutLγ, the nuclease MutSβ needs to make the nick, so it restrains the '
                          'expansion step as well as removing the loop. The balance between them sets the direction a cell drifts, and neither enzyme sets it alone.', 14, INK)
     o += ls
     ls, _ = para(0, y + 10, 'Drawn from work on purified proteins and synthetic substrates. Triplet counts are illustrative.', 13)
@@ -175,7 +175,7 @@ def panel_cortex_scatter():
     xs = lambda v: L + v / 190.0 * (R - L)
     ys = lambda v: B - (v - 24) / (42 - 24) * (B - T)
     o = []
-    o.append(tx(0, 24, 'Across the 11 cortex donors, the ones whose repeats travelled furthest have the least FAN1', 19, INK, w=600))
+    o.append(tx(0, 24, 'Across the 11 cortex donors, the ones whose repeats traveled furthest have the least FAN1', 19, INK, w=600))
     ls, _ = para(0, 46, 'FAN1 transcripts per million in cortical excitatory neurons, standardized so every donor is compared at the same '
                         'distribution of repeat lengths. Expansion is the 90th percentile repeat length in that donor, less the length inherited.')
     o += ls
@@ -288,10 +288,10 @@ def panel_null():
     ls, y = para(0, 410, 'The darker part of each bar is the %s genes expressed within a factor of 1.3 of FAN1 itself. They are spread as widely as '
                          'the rest, a standard deviation of 0.33 against 0.34, and the nearest of them reaches %.2f.' % (f'{POOL_N:,}', POOL_MAX), 14, INK)
     o += ls
-    ls, y = para(0, y + 6, 'That is a reference point, not a p-value: genes are correlated with one another, so the tail is not %s independent draws.'
+    ls, y = para(0, y + 6, 'That figure is a reference point rather than a p-value: genes move together, so the tail holds fewer than %s independent draws.'
                  % f'{NGENE:,}')
     o += ls
-    ls, y = para(0, y + 6, 'The direction MSH2 runs is the one the mechanism implies, from the opposite side of the balance.', 13)
+    ls, y = para(0, y + 6, 'MSH2 runs in the direction the mechanism implies, from the opposite side of the competition.', 13)
     o += ls
     ls, _ = para(0, y + 4, 'Eleven donors allow a correlation only 221 distinct values, 1/110 apart. Each bar holds five of them.', 13)
     o += ls
@@ -299,40 +299,40 @@ def panel_null():
 
 
 # ---------------------------------------------------------------- panel 4
-def balance(x0, y0, label, ratio, mutsb, fan1, col):
-    """a beam tilting by the log of the ratio"""
-    o = []
-    half, ang = 132, min(20.0, 11.0 * math.log(ratio))
-    dx, dy = half * math.cos(math.radians(ang)), half * math.sin(math.radians(ang))
-    o.append(tx(x0, y0 - 112, label, 16, INK, 'middle', w=600))
-    o.append('<path d="M %.1f %.1f l -22 56 l 44 0 z" fill="%s" fill-opacity="0.25" stroke="%s"/>'
-             % (x0, y0 + 4, col, col))
-    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="4" stroke-linecap="round"/>'
-             % (x0 - dx, y0 - dy, x0 + dx, y0 + dy, INK))
-    for sx, sy, v, nm, c in [(x0 - dx, y0 - dy, mutsb, 'MutSβ', RED), (x0 + dx, y0 + dy, fan1, 'FAN1', GREEN)]:
-        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (sx, sy, sx, sy + 26, MUT))
-        o.append('<path d="M %.1f %.1f q 34 26 68 0" fill="%s" fill-opacity="0.3" stroke="%s" stroke-width="2"/>'
-                 % (sx - 34, sy + 26, c, c))
-        o.append(tx(sx, sy - 28, nm, 14, c, 'middle', w=700))
-        o.append(tx(sx, sy - 10, '%.0f TPM' % v, 13, MUT, 'middle'))
-    o.append(tx(x0, y0 + 104, '%.1f to 1' % ratio, 20, INK, 'middle', w=700))
-    return o
+def bars(o, x0, label, ratio, mutsb, fan1, median_gain, col):
+    """MutSbeta and FAN1 as two bars on a shared axis, with the ratio stated"""
+    TOP, BASE, MAX = 112, 300, 360
+    yb = lambda v: BASE - v / MAX * (BASE - TOP)
+    for i, (v, nm, c) in enumerate(((mutsb, 'MutSβ', RED), (fan1, 'FAN1', GREEN))):
+        x = x0 + i * 114
+        o.append('<rect x="%.1f" y="%.1f" width="90" height="%.1f" rx="3" fill="%s"/>'
+                 % (x, yb(v), BASE - yb(v), c))
+        o.append(tx(x + 45, yb(v) - 10, '%.0f' % v, 15, INK, 'middle', w=700))
+        o.append(tx(x + 45, BASE + 20, nm, 13, c, 'middle', w=600))
+    mid = x0 + 102
+    o.append(tx(mid, BASE + 48, label, 15, INK, 'middle', w=600))
+    o.append(tx(mid, BASE + 78, '%.1f to 1' % ratio, 20, INK, 'middle', w=700))
+    o.append(tx(mid, BASE + 100, 'median %d CAGs added' % median_gain, 13, MUT, 'middle'))
 
 
 def panel_two_regions():
-    W, H = 1392, 742
+    W, H = 1392, 772
     o = []
     o.append(tx(0, 24, 'The striatum, where the repeats run furthest, is where FAN1 is most outnumbered — and where 6 donors cannot settle anything', 19, INK, w=600))
     o.append(tx(0, 46, 'Regional pseudobulk expression from the same matrices, and the same standardized correlation run on striatal projection neurons.', 14))
 
-    o += balance(260, 204, 'Cortical excitatory neurons', RATIO['cortex'],
-                 TPM['cortex']['MSH2'] + TPM['cortex']['MSH3'], TPM['cortex']['FAN1'], BLUE)
-    o += balance(660, 204, 'Striatal projection neurons', RATIO['striatum'],
-                 TPM['striatum']['MSH2'] + TPM['striatum']['MSH3'], TPM['striatum']['FAN1'], ORANGE)
-    o.append(tx(260, 336, 'median 26 CAGs added', 13, MUT, 'middle'))
-    o.append(tx(660, 336, 'median 145 CAGs added', 13, MUT, 'middle'))
-    o.append('<line x1="460" y1="104" x2="460" y2="320" stroke="%s"/>' % GRID)
-    o.append('<line x1="818" y1="104" x2="818" y2="320" stroke="%s"/>' % GRID)
+    TOP, BASE, MAX = 112, 300, 360
+    yb = lambda v: BASE - v / MAX * (BASE - TOP)
+    for v in (0, 100, 200, 300):
+        o.append('<line x1="96" y1="%.1f" x2="760" y2="%.1f" stroke="%s"/>' % (yb(v), yb(v), GRID))
+        o.append(tx(88, yb(v) + 4, str(v), 12, MUT, 'end'))
+    o.append(tx(44, (TOP + BASE) / 2, 'transcripts per million', 13, INK, 'middle')
+             .replace('<text ', '<text transform="rotate(-90 44 %.1f)" ' % ((TOP + BASE) / 2)))
+    bars(o, 130, 'Cortical excitatory neurons', RATIO['cortex'],
+         TPM['cortex']['MSH2'] + TPM['cortex']['MSH3'], TPM['cortex']['FAN1'], 26, BLUE)
+    bars(o, 480, 'Striatal projection neurons', RATIO['striatum'],
+         TPM['striatum']['MSH2'] + TPM['striatum']['MSH3'], TPM['striatum']['FAN1'], 145, ORANGE)
+    o.append('<line x1="818" y1="104" x2="818" y2="360" stroke="%s"/>' % GRID)
 
     # striatal scatter
     L, R, T, B = 920, 1340, 124, 296
@@ -357,11 +357,11 @@ def panel_two_regions():
     ls, _ = para(L - 44, 368, 'Two of the six are also cortex donors and keep their colors; the other four are gray.', 12, MUT, maxw=466)
     o += ls
 
-    ls, y = para(0, 412, 'The two regions do not disagree. The striatal donors all sit far out along the expansion axis, between 72 and 205 CAGs '
-                         'added, and their FAN1 values span barely 8 transcripts per million.', 14, INK)
+    ls, y = para(0, 440, 'All six striatal donors sit far out along the expansion axis, between 72 and 205 CAGs added, and their FAN1 values span '
+                         'barely 8 transcripts per million.', 14, INK)
     o += ls
-    ls, y = para(0, y + 6, 'With 6 donors and almost no spread in either quantity, a correlation near zero is what a real effect of the cortical '
-                           'size would most often produce here. The striatum is not evidence against; it is close to no evidence either way.')
+    ls, y = para(0, y + 6, 'With 6 donors and that little spread in either quantity, a correlation near zero is what a real effect of the cortical '
+                           'size would most often produce here, so the striatum leaves the question open.')
     o += ls
     o.append(tx(0, y + 34, 'Taken together', 15, INK, w=600))
     ls, y = para(0, y + 58, 'The cortex result is one cohort of 11 and an association, and the direction of cause is open. It is worth a test in material '
@@ -378,7 +378,7 @@ def panel_two_regions():
     return svg(W, H, 'MutS beta against FAN1 in two regions, drawn as a balance, beside the striatal scatter', o)
 
 
-HEIGHT = 2654
+HEIGHT = 2712
 page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -397,8 +397,9 @@ body{{margin:0}}
 <div style="width: 1520px; height: {HEIGHT}px; box-sizing: border-box; padding: 64px; background: {BG}; color: {INK}; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
 
 <div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8679">Board 6 of 7</div>
 <h1 style="margin: 0; font-size: 34px; line-height: 42px; font-weight: 700">FAN1, the gene that ranks first across the 11 cortex donors</h1>
-<p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">A re-analysis of the single-nucleus data released with the 2026 cortex paper (Zenodo record 18202664). Every gene in the matrix was given a per-donor expression rate standardized on the distribution of repeat lengths, then correlated with how far each donor&#8217;s repeats had travelled. The gene that comes out first is <i>FAN1</i>, the nuclease that removes the looped-out repeat.</p>
+<p style="margin: 0; font-size: 16px; line-height: 24px; color: {MUT}">A re-analysis of the single-nucleus data released with the 2026 cortex paper (Zenodo record 18202664). Every gene in the matrix was given a per-donor expression rate standardized on the distribution of repeat lengths, then correlated with how far each donor&#8217;s repeats had traveled. The gene that comes out first is <i>FAN1</i>, the nuclease that removes the looped-out repeat.</p>
 </div>
 
 {panel_mechanism()}

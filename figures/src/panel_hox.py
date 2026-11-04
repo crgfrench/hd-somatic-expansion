@@ -1,8 +1,15 @@
 """Draw the HOX-cluster panel and write it into the re-analysis board.
 
 The phase D genes that sit next to each other on a chromosome are, almost
-entirely, the four HOX clusters. This panel draws each cluster in genomic
+entirely, the four HOX clusters. This panel draws each cluster in paralog
 order with its phase D members filled.
+
+Paralog order is the genomic order: a HOX cluster is collinear, so the genes run
+in numerical order along the chromosome, ascending for HOXA and HOXB and
+descending for HOXC and HOXD. The panel sorts on the paralog number rather than
+on the stored annotation start, because the annotation keeps one row per symbol
+and for HOXC6 that row is an upstream isoform whose start sits between HOXC10
+and HOXC9.
 
 Two cautions are written into the panel because the result is easy to misread:
 
@@ -54,16 +61,20 @@ def short(g):
     return g[4:]
 
 
-W, H = 1392, 472
+W, H = 1392, 500
 BW, BH, GAP = 84, 30, 8
 o = ['<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="The four HOX clusters in genomic order, with the phase D genes filled" style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">' % (W, H, W, H)]
 o.append(tx(0, 20, 'The phase D genes that sit next to each other are the HOX clusters', 18, INK, w=600))
-o.append(tx(0, 42, 'Every HOX gene in the cortex statistics, drawn in genomic order within its cluster. Filled boxes are phase D genes.', 13))
+ls, _ = para(0, 42, 'The 23 genes named HOXA to HOXD with a paralog number that appear in the cortex paper\u2019s per-gene statistics, drawn in paralog order within each '
+                    'cluster, which is the order they occupy on the chromosome. Filled boxes are phase D genes. The long non-coding RNAs embedded in the same clusters carry other '
+                    'names, so they are counted separately below; HOXA11-AS is in the panel because its name takes the HOX form.', 13, lh=19)
+o += ls
 
 cx = {r['g']: r for r in D['cortex']}
-y = 78
+y = 108
 for cl in 'ABCD':
-    row = sorted([r for r in D['cortex'] if r['cl'] == cl], key=lambda r: r['pos'])
+    row = sorted([r for r in D['cortex'] if r['cl'] == cl],
+                 key=lambda r: r['par'], reverse=(cl in 'CD'))
     o.append(tx(0, y + 20, 'HOX' + cl, 14, INK, w=600))
     for i, r in enumerate(row):
         x = 72 + i * (BW + GAP)
@@ -73,27 +84,27 @@ for cl in 'ABCD':
         o.append(tx(x + BW / 2, y + 20, short(r['g']), 13, col, 'middle', w=600 if r['d'] else None))
     y += BH + 16
 
-o.append('<line x1="%d" y1="70" x2="%d" y2="%d" stroke="%s"/>' % (940, 940, y - 16, GRID))
-o.append(tx(980, 92, 'Cortex', 15, INK, w=600))
-o.append(tx(980, 116, '11 of the 23 HOX genes tested are phase D genes.', 13, INK))
-o.append(tx(980, 134, 'Chance would put 0.22 of them there.', 13, MUT))
-o.append(tx(980, 170, 'Striatum', 15, INK, w=600))
-o.append(tx(980, 194, '4 of 17, against 0.54 expected.', 13, INK))
-o.append(tx(980, 230, 'What else runs together', 15, INK, w=600))
-o.append(tx(980, 254, 'MEG3 with MEG8 on chromosome 14, the imprinted', 13, INK))
-o.append(tx(980, 272, 'DLK1-DIO3 locus, whose silencing is held by DNA', 13, INK))
-o.append(tx(980, 290, 'methylation at a control region. Nothing else.', 13, INK))
+o.append('<line x1="%d" y1="100" x2="%d" y2="%d" stroke="%s"/>' % (940, 940, y - 16, GRID))
+o.append(tx(980, 122, 'Cortex', 15, INK, w=600))
+o.append(tx(980, 146, '11 of the 23 named HOX genes are phase D genes.', 13, INK))
+o.append(tx(980, 164, 'Chance would put 0.22 of them there.', 13, MUT))
+o.append(tx(980, 200, 'Striatum', 15, INK, w=600))
+o.append(tx(980, 224, '4 of 17, against 0.54 expected.', 13, INK))
+o.append(tx(980, 260, 'What else runs together', 15, INK, w=600))
+o.append(tx(980, 284, 'MEG3 with MEG8 on chromosome 14, the imprinted', 13, INK))
+o.append(tx(980, 302, 'DLK1-DIO3 locus, whose silencing is held by DNA', 13, INK))
+o.append(tx(980, 320, 'methylation at a control region. Nothing else.', 13, INK))
 
-cy = 322
+cy = 352
 ls, cy = para(0, cy, 'Set the clusters aside and the remaining phase D genes are no more bunched than chance, so what they share is being a polycomb target rather than '
-                     'being neighbours. Polycomb targets lie all over the genome; HOX is where they sit in a row.', 13, INK)
+                     'being neighbors. Polycomb targets lie all over the genome; HOX is where they sit in a row.', 13, INK)
 o += ls
 ls, cy = para(0, cy + 8, 'The clusters bring their own long non-coding RNAs with them: HOTAIRM1, HOTTIP, HOXA-AS2, HOXD-AS2 and HOXB-AS1 all reach phase D. Scored in the '
                          'nuclei themselves rather than per donor, HOX expression runs at 0.33 transcripts per million below 100 CAGs and 33 above 260, present in 1.2% of nuclei '
                          'and then in 23% of them.')
 o += ls
-ls, cy = para(0, cy + 8, 'Counted by gene family. A spatial test is not used for these genes: the phase sets run near 190 transcripts per million against 17 for all tested genes, '
-                         'so a null drawn from every gene is mis-matched, and matching on abundance drops all 11 HOX genes, which sit below the 1 TPM floor of the abundance table.')
+ls, cy = para(0, cy + 8, 'Counted by gene family rather than by position, because the phase sets run near 190 transcripts per million against 17 for all tested genes, '
+                         'so a null drawn from every gene is mismatched, and matching on abundance drops all 11 HOX genes, which sit below the 1 TPM floor of the abundance table.')
 o += ls
 o.append('</svg>')
 svg = '\n'.join(o)

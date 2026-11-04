@@ -43,7 +43,7 @@ import numpy as np
 import pandas as pd
 
 CHR = [str(i) for i in range(1, 23)] + ['X', 'Y']
-WIN = 1_000_000          # two genes count as neighbours within this distance
+WIN = 1_000_000          # two genes count as neighbors within this distance
 NPERM = 10_000
 NBIN = 10                # abundance bins for the matched null
 SEED = 20261104
