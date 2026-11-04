@@ -1,0 +1,5 @@
+data/*
+!data/PUT_INPUT_FILES_HERE.txt
+__pycache__/
+*.pyc
+figures/src/Timing.dc.html

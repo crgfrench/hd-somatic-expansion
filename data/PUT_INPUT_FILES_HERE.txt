@@ -1,0 +1,11 @@
+The analysis scripts read their inputs from this folder, or from a folder given
+as the first argument. Five files are needed, all from Zenodo record 18202664
+except the last two:
+
+  donor_metadata.txt            HD_cortex/data/
+  per_nucleus_repeat_lengths.csv.gz   written by notebooks/01
+  phaseC_gene_onsets.csv              written by notebooks/01
+  caudate.stats.txt             HD_cortex/data/
+  cortex.stats.txt              HD_cortex/data/
+  41593_2016_BFnn4360_MOESM3_ESM.xls   von Schimmelmann 2016, Table S1
+  41593_2016_BFnn4360_MOESM5_ESM.xlsx  von Schimmelmann 2016, Table S3
