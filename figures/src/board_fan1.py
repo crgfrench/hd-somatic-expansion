@@ -226,14 +226,18 @@ def panel_cortex_scatter():
 
 # ---------------------------------------------------------------- panel 3
 def panel_null():
-    W, H = 1392, 492
+    W, H = 1392, 512
     L, R, T, B = 110, 1340, 96, 330
     xs = lambda v: L + (v + 1) / 2.0 * (R - L)
-    nb = 40
+    # With 11 donors a Spearman correlation is built from an even sum of squared
+    # rank differences, so it can only land on 221 values spaced 1/110 apart. Bars
+    # of an arbitrary width hold 5 of those values and then 6, which alternates the
+    # heights; these bars hold 5 each.
+    PER, STEP = 5, 1.0 / 110
+    nb = 220 // PER + 1
     hist = [0] * nb
     for r in D['rho']:
-        k = min(nb - 1, int((r + 1) / 2.0 * nb))
-        hist[k] += 1
+        hist[min(nb - 1, (int(round(r * 110)) + 110) // PER)] += 1
     top = max(hist)
     ys = lambda c: B - c / top * (B - T)
     o = []
@@ -244,27 +248,34 @@ def panel_null():
     for c in (0, top // 2, top):
         o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (L, ys(c), R, ys(c), GRID))
         o.append(tx(L - 10, ys(c) + 4, f'{c:,}', 12, MUT, 'end'))
-    bw = (R - L) / nb
-    for k, c in enumerate(hist):
+    for j, c in enumerate(hist):
+        x0, x1 = xs((-110 + j * PER) * STEP), xs((-110 + (j + 1) * PER) * STEP)
         o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="%s"/>'
-                 % (L + k * bw + 0.6, ys(c), bw - 1.2, B - ys(c), '#c9c4b8'))
+                 % (x0 + 0.6, ys(c), max(1.0, x1 - x0 - 1.2), B - ys(c), '#c9c4b8'))
     for v in (-1, -0.5, 0, 0.5, 1):
         o.append(tx(xs(v), B + 24, ('%+.1f' % v).replace('-', '−') if v else '0', 12, MUT, 'middle'))
     o.append(tx((L + R) / 2, B + 52, 'Spearman rho between the gene and expansion achieved', 14, INK, 'middle'))
     o.append(tx(44, (T + B) / 2, 'genes', 14, INK, 'middle')
              .replace('<text ', '<text transform="rotate(-90 44 %.1f)" ' % ((T + B) / 2)))
     fx = xs(FAN1_RHO)
-    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="3"/>' % (fx, T, fx, B, ORANGE))
+    # FAN1 is one gene, so its bar is one gene tall. Mark it as a point on the
+    # axis with a leader to the label; a full-height rule would read as a bar.
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1" '
+             'stroke-dasharray="3 4" opacity="0.6"/>' % (fx, B - 10, fx, T + 34, ORANGE))
+    o.append('<circle cx="%.1f" cy="%.1f" r="5.5" fill="%s" stroke="%s" stroke-width="2"/>'
+             % (fx, B, ORANGE, BG))
     o.append(tx(fx + 12, T + 26, 'FAN1,  rho = %+.2f' % FAN1_RHO, 15, ORANGE, w=700))
-    o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}' + ' — no gene reaches it', 13, INK))
+    o.append(tx(fx + 12, T + 48, 'rank 1 of %s' % f'{NGENE:,}' + ' — no gene reaches it, and its own bar is one gene tall', 13, INK))
     ls, y = para(0, 410, 'Narrowed to the 1,935 genes of FAN1’s own abundance, within a factor of 1.3 either way, none reaches it either. '
                          'The figure is not what this many donors and this many genes throw up by chance.', 14, INK)
     o += ls
     ls, y = para(0, y + 6, 'That is a reference point, not a p-value: genes are correlated with one another, so the tail is not %s independent draws.'
                  % f'{NGENE:,}')
     o += ls
-    ls, _ = para(0, y + 6, 'MSH2, the partner that opposes FAN1, runs the other way at rho = +0.66 — the direction the mechanism implies, '
+    ls, y = para(0, y + 6, 'MSH2, the partner that opposes FAN1, runs the other way at rho = +0.66 — the direction the mechanism implies, '
                            'from the opposite side of the balance.', 13)
+    o += ls
+    ls, _ = para(0, y + 4, 'Eleven donors allow a correlation only 221 distinct values, 1/110 apart. Each bar holds five of them.', 13)
     o += ls
     return svg(W, H, 'Distribution of gene-by-gene correlations with expansion, FAN1 marked at the extreme', o)
 
@@ -345,7 +356,7 @@ def panel_two_regions():
     return svg(W, H, 'MutS beta against FAN1 in two regions, drawn as a balance, beside the striatal scatter', o)
 
 
-HEIGHT = 2592
+HEIGHT = 2612
 page = f"""<!doctype html>
 <html lang="en">
 <head>
