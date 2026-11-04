@@ -12,7 +12,7 @@ ORCID 0009-0001-8847-3018
 
 `figures/Repeat_Disease_Thresholds.pdf` opens in the browser from here, one page
 per board, each page sized to the board it holds. `figures/Repeat_Disease_Thresholds.html` is the same content as a
-single self-contained page, which a browser renders once downloaded. Six
+single self-contained page, which a browser renders once downloaded. Seven
 boards:
 
 1. Repeat lengths across 47 expansion disorders, on a logarithmic scale, with
@@ -27,6 +27,8 @@ boards:
 6. FAN1 and the pace of expansion: the MutSβ–FAN1 competition, FAN1 against
    expansion across the 11 cortex donors, where that correlation sits among all
    17,516 genes, and the two regions compared.
+7. When the silencing fails: four tests that score each nucleus by its own
+   repeat length rather than by its donor.
 
 ## What was run
 
@@ -81,6 +83,47 @@ travelled. Across the 11 cortex donors FAN1 gives Spearman rho = −0.92, rankin
 is −0.82, p = 0.004. The striatum shows nothing, on six donors with almost no variation
 in inherited length. `analysis/expression/README.md` has the method, the controls and
 the limits, including the reverse-causation problem a post-mortem snapshot cannot settle.
+
+### When the silencing fails — `analysis/silencing_tests.py`
+
+Four tests on the per-nucleus data, each scoring a nucleus by the repeat it
+carries rather than by the donor it came from.
+
+**A.** All four HOX clusters come on together. Flat below 140 CAGs, lifting in
+the 140–159 band, then a hundredfold climb in parallel, from 0.33 to 33
+transcripts per million. One threshold shared by four clusters is a switch
+thrown at the level of the silencing system rather than four domains failing
+separately, and it lands on the 150 both papers identify.
+
+**B.** At a fixed repeat length, a nucleus's HOX level still tracks how far it
+has gone in phase C: past 230 CAGs, rho = +0.32 with the rising genes and −0.25
+with the identity genes, holding the released control gene set, read depth and
+repeat length constant, on 891 nuclei. The control set is what separates this
+from a drift in transcriptome quality — across the same bands it moves +0.13
+while the identity genes move −0.34. Phase C and phase D are therefore not two
+clocks both reading off repeat length.
+
+**C.** The MutSβ-to-FAN1 balance does not predict expansion between cell types
+of one person, though it appears to between people. Measured only in nuclei
+whose repeat has moved under 10 copies, and compared across subtypes inside a
+donor, the mean correlation is −0.20 over six donors, which is the sign the
+mechanism forbids; in the one donor whose subtypes span a wide range of
+expansion it is −0.28 at p = 0.0005, with subtype size explaining neither
+variable. This was meant to answer the sample size behind the FAN1 result and
+does not.
+
+**D.** The two regions derepress the same genes at different repeat lengths.
+Across the 42 HOX genes measured in both, levels in heavily expanded nuclei
+correlate at rho = +0.86. But at 140–199 CAGs the cortex sits at 5.2 times its
+own baseline (p = 3 × 10⁻⁶⁸) while the striatum sits at 0.46 — and that striatal
+band holds 18 million transcripts, enough that a cortex-sized rise would have
+shown about 75 HOX counts where 7 were seen. Both reach the same place past 260
+CAGs, 102 times baseline against 61.
+
+Gene rows are pulled from the matrices by
+`analysis/expression/extract_gene_rows.py`, which also recovers the column
+barcodes, needed because the striatal summary carries 6,359 rows against 9,426
+matrix columns.
 
 ### Subtype thresholds — `notebooks/02_subtype_thresholds.ipynb`, `analysis/subtype_thresholds.py`
 
@@ -141,7 +184,9 @@ rewriting the region between its `hox:start` and `hox:end` markers from
 `figures/src/board_timing.py` writes the expansion-timing board and
 `figures/src/board_fan1.py` the FAN1 board, the latter from `repair_genes.json`
 as written by `analysis/expression/repair_genes_vs_expansion.py`.
-`build_standalone_page.py` assembles the six boards into the single HTML page,
+`figures/src/board_silencing.py` writes the seventh board from
+`silencing_data.json` as written by `analysis/silencing_tests.py`.
+`build_standalone_page.py` assembles the seven boards into the single HTML page,
 expanding the disease table through `expand_template.js` (Node). `build_pdf.py`
 then renders that page to PDF, one board per page at the board's own height,
 through `build_pdf.js` (Playwright) and pypdf.
