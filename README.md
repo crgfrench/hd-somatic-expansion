@@ -58,8 +58,8 @@ enrichment resting on three genes.
 
 Whether the phase C and phase D gene sets are bunched along the chromosome,
 which a domain-level failure of polycomb silencing would produce. The answer is
-specific rather than general: 11 of the 23 genes named HOXA to HOXD with a
-paralog number in the cortex statistics
+specific rather than general: 11 of the 23 HOX-cluster genes in the cortex
+statistics — 22 named HOXA to HOXD with a paralog number, plus HOXA11-AS —
 are phase D genes against 0.22 expected, all four clusters with their embedded
 lncRNAs, and 4 of 17 in the striatum against 0.54. The only other multi-gene run
 is MEG3 with MEG8 at the imprinted DLK1-DIO3 locus. Set the clusters aside and
@@ -90,20 +90,32 @@ the limits, including the reverse-causation problem a post-mortem snapshot canno
 Four tests on the per-nucleus data, each scoring a nucleus by the repeat it
 carries rather than by the donor it came from.
 
-**A.** All four HOX clusters are above their own baseline across 140–199 CAGs.
-Each cluster is taken relative to its own rate below 100 copies, since HOXD's
-baseline is four times the others and an absolute scale reads that difference as
-a difference in onset. Pooled over 140–199 the factors are 3.7, 2.0, 5.3 and 6.5
-for HOXA to HOXD, on 27, 9, 25 and 121 transcripts, each above 1 at p = 1.6e-08,
-0.04, 4.1e-11 and 1.1e-55; beyond 260 all four run 50 to 130 times baseline.
-Four polycomb domains lifting inside one 60-copy window, which contains the 150
-both papers identify, is what a failure of the shared silencing would produce. A
-common onset length is past what these counts can settle: the four factors differ
-from one another at p = 0.0001, and the two bands where HOXB records nothing
-expected 1.5 transcripts to begin with.
+**A.** All four HOX clusters run far above their own baseline past 200 CAGs;
+across 140–199 two of the four do. Each cluster is taken relative to its own rate
+below 100 copies, since HOXD's baseline is four times the others and an absolute
+scale reads that difference as a difference in onset.
 
-Panel A plots fold change for that reason, and `figures/src/hox_cluster_bands.json`
-holds the per-cluster transcript counts by band that it draws.
+Uncertainty comes from a two-level nonparametric bootstrap
+(`analysis/hox_cluster_bootstrap.py`, 4,000 resamples): donors drawn with
+replacement, then nuclei within each drawn donor. Pooling transcript counts over
+a band and testing them against a Poisson baseline treats every nucleus as an
+independent draw and ignores the between-donor variation, which dominates here —
+one donor supplies 45,665 of the 74,848 baseline nuclei. That test gave p-values
+down to 1e-55 for the 140–199 window; the bootstrap does not support them.
+
+Past 200 CAGs the factors are 74, 50, 76 and 53 for HOXA to HOXD, on intervals of
+29–154, 13–103, 22–130 and 12–103. Across 140–199 they are 3.7, 2.0, 5.3 and 6.5,
+above baseline in 98%, 45%, 87% and 99% of resamples; HOXA and HOXD each draw
+transcripts from 6 of the 10 donors with nuclei in that window, HOXC from 3, and
+HOXB's 9 transcripts come from one donor, so HOXB carries no evidence there.
+Below 140 the largest movement is HOXC at 1.8 times baseline, on 11 transcripts
+from 3 donors, interval 0.0–5.2.
+
+Four polycomb domains lifting together is what a failure of the shared silencing
+would produce, and past 200 CAGs that has plainly happened; how far back toward
+the 150 both papers identify it reaches is what the 140–199 figures above address.
+`figures/src/hox_cluster_bands.json` holds the per-cluster transcript counts by
+band that panel A draws, and `figures/src/hox_bootstrap.json` the intervals.
 
 **B.** At a fixed repeat length, a nucleus's HOX level still tracks how far it
 has gone in phase C: past 230 CAGs, rho = +0.32 with the rising genes and −0.25
@@ -131,7 +143,9 @@ differences do.
 **D.** The two regions derepress the same genes at different repeat lengths.
 Across the 42 HOX genes present in both expression matrices — the 39 named
 HOXA to HOXD with a paralog number, plus HOXA10-AS, HOXA11-AS and HOXC13-AS —
-levels in nuclei carrying 260 copies or more correlate at rho = +0.86. But at 140–199 CAGs the cortex sits at 5.2 times its
+levels in nuclei carrying 260 copies or more correlate at rho = +0.86. (The 23
+on board 4 is a different set: 22 numbered HOX genes plus HOXA11-AS, those being
+the ones the cortex paper's own per-gene statistics cover.) But at 140–199 CAGs the cortex sits at 5.2 times its
 own baseline (p = 3 × 10⁻⁶⁸) while the striatum sits at 0.46 — and that striatal
 band holds 18 million transcripts, enough that a cortex-sized rise would have
 shown about 75 HOX counts where 7 were seen. Both reach the same place past 260

@@ -65,9 +65,9 @@ W, H = 1392, 500
 BW, BH, GAP = 84, 30, 8
 o = ['<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="The four HOX clusters in genomic order, with the phase D genes filled" style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">' % (W, H, W, H)]
 o.append(tx(0, 20, 'The phase D genes that sit next to each other are the HOX clusters', 18, INK, w=600))
-ls, _ = para(0, 42, 'The 23 genes named HOXA to HOXD with a paralog number that appear in the cortex paper\u2019s per-gene statistics, drawn in paralog order within each '
-                    'cluster, which is the order they occupy on the chromosome. Filled boxes are phase D genes. The long non-coding RNAs embedded in the same clusters carry other '
-                    'names, so they are counted separately below; HOXA11-AS is in the panel because its name takes the HOX form.', 13, lh=19)
+ls, _ = para(0, 42, 'The 22 genes named HOXA to HOXD with a paralog number that appear in the cortex paper\u2019s per-gene statistics, together with HOXA11-AS, drawn in paralog order within each '
+                    'cluster, which is the order they occupy on the chromosome. Filled boxes are phase D genes. The other long non-coding RNAs embedded in these clusters carry '
+                    'names of their own, so they are counted separately below.', 13, lh=19)
 o += ls
 
 cx = {r['g']: r for r in D['cortex']}
@@ -86,7 +86,7 @@ for cl in 'ABCD':
 
 o.append('<line x1="%d" y1="100" x2="%d" y2="%d" stroke="%s"/>' % (940, 940, y - 16, GRID))
 o.append(tx(980, 122, 'Cortex', 15, INK, w=600))
-o.append(tx(980, 146, '11 of the 23 named HOX genes are phase D genes.', 13, INK))
+o.append(tx(980, 146, '11 of these 23 genes are phase D genes.', 13, INK))
 o.append(tx(980, 164, 'Chance would put 0.22 of them there.', 13, MUT))
 o.append(tx(980, 200, 'Striatum', 15, INK, w=600))
 o.append(tx(980, 224, '4 of 17, against 0.54 expected.', 13, INK))

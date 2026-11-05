@@ -1,15 +1,17 @@
 """Build the seventh board: four tests of when the silencing fails.
 
-Inputs are silencing_data.json, written by the four analyses, and
+Inputs are silencing_data.json, written by the four analyses;
 hox_cluster_bands.json, the per-cluster transcript counts by repeat-length band
 that panel A plots as a fold change over each cluster's own baseline below 100
-copies. Output is Silencing.dc.html.
+copies; and hox_bootstrap.json, the donor-level bootstrap intervals that panel A
+states the claims against. Output is Silencing.dc.html.
 """
 import json, math, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = json.load(open(os.path.join(HERE, 'silencing_data.json')))
 PA = json.load(open(os.path.join(HERE, 'hox_cluster_bands.json')))
+BOOT = json.load(open(os.path.join(HERE, 'hox_bootstrap.json')))
 PROJ = HERE + os.sep
 
 BG, INK, MUT, GRID = '#fbfaf7', '#1d1d1b', '#5c5a55', '#e4dfd4'
@@ -63,7 +65,7 @@ def svg(W, H, label, body):
 
 # ---------------------------------------------------------------- panel A
 def panel_a():
-    W, H = 1392, 606
+    W, H = 1392, 700
     L, R, T, B = 110, 856, 100, 372
     A = PA['bands']
     PO = PA['pooled']
@@ -71,7 +73,7 @@ def panel_a():
     lo, hi = 0.35, 220.0
     ys = lambda v: B - (math.log10(max(v, lo)) - math.log10(lo)) / (math.log10(hi) - math.log10(lo)) * (B - T)
     o = []
-    o.append(tx(0, 24, 'All four HOX clusters are above their own baseline from 140 copies, by factors of 2 to 6.5', 19, INK, w=600))
+    o.append(tx(0, 24, 'Past 200 copies all four HOX clusters run far above their own baseline; across 140 to 199, two of the four do', 19, INK, w=600))
     ls, _ = para(0, 46, 'Each nucleus scored by its own repeat length rather than by its donor, across 78,855 cortical neurons. Each cluster is divided by its own rate below '
                         '100 copies, so the four curves start at 1 and height on the chart is a fold change rather than an abundance.', 14, maxw=1240)
     o += ls
@@ -122,38 +124,49 @@ def panel_a():
     o.append(tx(L + 16, ys(0.44), 'hollow circles: no HOXB transcript in that band,', 12, CLUS['B']))
     o.append(tx(L + 16, ys(0.44) + 16, 'against the 1.5 its baseline predicts', 12, CLUS['B']))
 
-    # right block: the pooled 140-199 estimate, which is what the claim rests on
+    # right block: fold change with donor-level uncertainty, which is what the claim rests on
     X0 = 940
-    o.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s"/>' % (X0 - 40, T - 34, X0 - 40, B + 40, GRID))
-    o.append(tx(X0, T - 12, 'Pooled over 140 to 199 copies', 15, INK, w=600))
-    o.append(tx(X0, T + 8, '%d nuclei, %.0f million transcripts' % (PO['n'], PO['umis'] / 1e6), 13))
-    bl, br = X0 + 160, 1356
-    fs = lambda v: bl + (math.log10(max(v, 0.7)) - math.log10(0.7)) / (math.log10(11) - math.log10(0.7)) * (br - bl)
-    for v in (1, 2, 5, 10):
-        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (fs(v), T + 30, fs(v), T + 178, GRID))
-        o.append(tx(fs(v), T + 196, '%g×' % v, 12, MUT, 'middle'))
-    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.6"/>'
-             % (fs(1), T + 30, fs(1), T + 178, SLATE))
-    for i, cl in enumerate('ABCD'):
-        p = PO['HOX' + cl]
-        yy = T + 52 + i * 34
-        o.append(tx(X0, yy + 4, 'HOX' + cl, 13, CLUS[cl], w=600))
-        o.append(tx(X0 + 136, yy + 4, '%d transcripts' % p['obs'], 12, MUT, 'end'))
-        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2"/>'
-                 % (fs(p['lo']), yy, fs(min(p['hi'], 11)), yy, CLUS[cl]))
-        o.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"/>' % (fs(p['fold']), yy, CLUS[cl]))
-        o.append(tx(fs(min(p['hi'], 11)) + 8, yy + 4, '%.1f×' % p['fold'], 12, CLUS[cl], w=600))
-    o.append(tx(X0, T + 222, 'Each estimate is above 1 (p = 1.6e-08, 0.04, 4.1e-11, 1.1e-55).', 13, INK))
-    o.append(tx(X0, T + 242, 'The four factors differ from each other: p = %.4f on 3 degrees' % PO['het_p'], 13, MUT))
-    o.append(tx(X0, T + 260, 'of freedom, so a single common factor of %.1f× is rejected.' % PO['common'], 13, MUT))
-
-    ls, y = para(0, B + 110, 'Below 140 copies the four clusters sit at their own baselines. Across 140 to 199 copies every one of them is above that baseline, and by 200 all '
-                             'four are up fifteenfold or more. Four domains rising in the same 60-copy window is what a failure of the shared silencing system would produce, and the '
-                             'window contains the 150 copies the original papers identify.', 14, INK)
+    o.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s"/>' % (X0 - 40, T - 34, X0 - 40, B + 110, GRID))
+    o.append(tx(X0, T - 12, 'Fold change with donor-level uncertainty', 15, INK, w=600))
+    ls, _ = para(X0, T + 8, 'Donors drawn with replacement, then nuclei within each drawn donor, 4,000 times. The '
+                            'interval is the middle 95% of those draws.', 12, maxw=410, lh=16)
     o += ls
-    ls, y = para(0, y + 8, 'A common onset length is beyond what these counts can establish. The 140 to 199 range holds 9 to 121 transcripts per cluster, the estimated factors '
-                           'range from 2.0 to 6.5, and the two bands where HOXB records nothing expected only 1.5 transcripts to begin with. The evidence places all four clusters '
-                           'above baseline inside one window; it leaves the order within that window open.', 13)
+    bl, br = X0 + 96, 1360
+    FLO, FHI = 0.25, 260.0
+    fs = lambda v: bl + (math.log10(min(max(v, FLO), FHI)) - math.log10(FLO)) / (math.log10(FHI) - math.log10(FLO)) * (br - bl)
+    TOP, BOT = T + 56, B + 58
+    for v in (1, 10, 100):
+        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s"/>' % (fs(v), TOP, fs(v), BOT, GRID))
+        o.append(tx(fs(v), BOT + 20, '%g×' % v, 12, MUT, 'middle'))
+    o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.6"/>'
+             % (fs(1), TOP, fs(1), BOT, SLATE))
+    row = TOP + 4
+    for key, lab in (('band_140_199', '140 to 199 copies'), ('band_200_plus', '200 copies and over')):
+        o.append(tx(X0, row + 12, lab, 13, INK, w=600))
+        row += 24
+        for cl in 'ABCD':
+            p = BOOT[key]['HOX' + cl]
+            o.append(tx(X0, row + 4, 'HOX' + cl, 13, CLUS[cl], w=600))
+            o.append(tx(X0 + 86, row + 4, '%d' % p['obs'], 11, MUT, 'end'))
+            o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2"/>'
+                     % (fs(p['lo']), row, fs(p['hi']), row, CLUS[cl]))
+            o.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"/>' % (fs(p['fold']), row, CLUS[cl]))
+            o.append(tx(fs(p['hi']) + 8, row + 4, '%.0f×' % p['fold'] if p['fold'] >= 10 else '%.1f×' % p['fold'],
+                        12, CLUS[cl], w=600))
+            row += 24
+        row += 10
+    o.append(tx(X0, BOT + 44, 'Left of each bar: transcripts of that cluster in the window. A bar that runs to', 12, MUT))
+    o.append(tx(X0, BOT + 60, 'the axis edge has a lower bound of zero.', 12, MUT))
+
+    ls, y = para(0, B + 134, 'Past 200 copies every cluster is up fiftyfold or more and every interval is clear of baseline. Four polycomb domains lifting together is what a '
+                             'failure of the shared silencing system would produce, and the failure is beyond doubt by 200 copies.', 14, INK)
+    o += ls
+    ls, y = para(0, y + 8, 'In the 140 to 199 window, which is the one containing the 150 copies the original papers identify, the evidence is thinner. HOXA at 3.7 times and '
+                           'HOXD at 6.5 are above baseline in 98% and 99% of the resamples, with 6 of the 10 donors contributing transcripts to each. HOXC at 5.3 reaches 87%, on '
+                           '3 donors. HOXB rests on 9 transcripts from a single donor and its interval runs from 0 to 28, so that cluster carries no evidence in this window at all.', 13)
+    o += ls
+    ls, y = para(0, y + 8, 'Single-band movements carry less than they appear to. Below 140 copies the largest is HOXC at 1.8 times baseline, on 11 transcripts from 3 donors, with '
+                           'a bootstrap interval of 0.0 to 5.2 and 62% of resamples above 1. The curves show the shape; the intervals to the right are what the claims rest on.', 13)
     o += ls
     return svg(W, H, 'HOX rate against repeat length for the four clusters, as a fold change over each cluster own baseline, cortex', o)
 
@@ -344,7 +357,7 @@ def panel_d():
     return svg(W, H, 'HOX genes compared between regions, and the thresholds at which each region moves', o)
 
 
-HEIGHT = 2700
+HEIGHT = 2794
 page = f"""<!doctype html>
 <html lang="en">
 <head>
