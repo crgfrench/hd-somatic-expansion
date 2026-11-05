@@ -66,7 +66,7 @@ BW, BH, GAP = 84, 30, 8
 o = ['<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="The four HOX clusters in genomic order, with the phase D genes filled" style="flex: none; font-family: \'IBM Plex Sans\', system-ui, sans-serif">' % (W, H, W, H)]
 o.append(tx(0, 20, 'The phase D genes that sit next to each other are the HOX clusters', 18, INK, w=600))
 ls, _ = para(0, 42, 'The 22 genes named HOXA to HOXD with a paralog number that appear in the cortex paper\u2019s per-gene statistics, together with HOXA11-AS, drawn in paralog order within each '
-                    'cluster, which is the order they occupy on the chromosome. Filled boxes are phase D genes. The other long non-coding RNAs embedded in these clusters carry '
+                    'cluster, which is the order they occupy on the chromosome. Filled boxes are phase D genes. The other long non-coding RNAs embedded in these clusters have '
                     'names of their own, so they are counted separately below.', 13, lh=19)
 o += ls
 

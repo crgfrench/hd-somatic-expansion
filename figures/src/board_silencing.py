@@ -163,9 +163,9 @@ def panel_a():
     o += ls
     ls, y = para(0, y + 8, 'In the 140 to 199 window, which is the one containing the 150 copies the original papers identify, the evidence is thinner. HOXA at 3.7 times and '
                            'HOXD at 6.5 are above baseline in 98% and 99% of the resamples, with 6 of the 10 donors contributing transcripts to each. HOXC at 5.3 reaches 87%, on '
-                           '3 donors. HOXB rests on 9 transcripts from a single donor and its interval runs from 0 to 28, so that cluster carries no evidence in this window at all.', 13)
+                           '3 donors. HOXB rests on 9 transcripts from a single donor and its interval runs from 0 to 28, so whatever HOXB does in this window remains unmeasured.', 13)
     o += ls
-    ls, y = para(0, y + 8, 'Single-band movements carry less than they appear to. Below 140 copies the largest is HOXC at 1.8 times baseline, on 11 transcripts from 3 donors, with '
+    ls, y = para(0, y + 8, 'Single-band movements mean less than they appear to. Below 140 copies the largest is HOXC at 1.8 times baseline, on 11 transcripts from 3 donors, with '
                            'a bootstrap interval of 0.0 to 5.2 and 62% of resamples above 1. The curves show the shape; the intervals to the right are what the claims rest on.', 13)
     o += ls
     return svg(W, H, 'HOX rate against repeat length for the four clusters, as a fold change over each cluster own baseline, cortex', o)
@@ -214,7 +214,7 @@ def panel_b():
     o.append(tx(984, 290, 'The control line staying flat is what', 13, MUT))
     o.append(tx(984, 308, 'rules out a general drift in quality.', 13, MUT))
 
-    ls, y = para(0, 406, 'Two neurons carrying the same number of repeats can sit at different points. The one that has lost more of its identity is the one whose HOX clusters have opened, '
+    ls, y = para(0, 406, 'Two neurons with the same number of repeats can sit at different points. The one that has lost more of its identity is the one whose HOX clusters have opened, '
                          'and the coupling strengthens as the repeat lengthens.', 14, INK)
     o += ls
     ls, _ = para(0, y + 6, 'So phase C and phase D advance together. A within-band correlation establishes that the two are coupled, and it leaves open whether one process drives '
@@ -293,7 +293,7 @@ def panel_d():
     ys = lambda v: B - f(v) * (B - T)
     o = []
     o.append(tx(0, 24, 'The two regions switch on the same genes, and they do it at different repeat lengths', 19, INK, w=600))
-    ls, _ = para(0, 46, 'Left: each of the 42 HOX genes present in both expression matrices, at its level in nuclei carrying 260 copies or more. These are the 39 genes named '
+    ls, _ = para(0, 46, 'Left: each of the 42 HOX genes present in both expression matrices, at its level in nuclei at 260 copies or more. These are the 39 genes named '
                         'HOXA to HOXD with a paralog number, plus HOXA10-AS, HOXA11-AS and HOXC13-AS; board 4 instead counts the 23 of them that the cortex paper’s own per-gene '
                         'statistics cover. Right: how much each region has moved from its own baseline.', 14)
     o += ls
@@ -389,7 +389,7 @@ body{{margin:0}}
 
 {panel_d()}
 
-<p style="margin: 0; font-size: 12px; line-height: 18px; color: {MUT}">Sources: single-nucleus expression and per-nucleus repeat lengths, Kashin, Lee et al., <i>Cell</i> 2026 (Zenodo record 18202664), cortical excitatory neurons and striatal projection neurons; phase C scores from the same archive. Striatal nuclei are matched to the expression matrix by barcode, since that summary carries 6,359 rows against 9,426 matrix columns. Code at github.com/crgfrench/hd-somatic-expansion.</p>
+<p style="margin: 0; font-size: 12px; line-height: 18px; color: {MUT}">Sources: single-nucleus expression and per-nucleus repeat lengths, Kashin, Lee et al., <i>Cell</i> 2026 (Zenodo record 18202664), cortical excitatory neurons and striatal projection neurons; phase C scores from the same archive. Striatal nuclei are matched to the expression matrix by barcode, since that summary has 6,359 rows against 9,426 matrix columns. Code at github.com/crgfrench/hd-somatic-expansion.</p>
 
 </div>
 </x-dc>

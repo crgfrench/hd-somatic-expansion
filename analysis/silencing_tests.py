@@ -8,7 +8,7 @@ came from, which is what makes these different from the donor-level work.
      system; four different ones mean each domain fails on its own.
 
   B  At a fixed repeat length, is HOX derepression tied to how far that nucleus
-     has gone in phase C? The released score file carries a control gene set,
+     has gone in phase C? The released score file includes a control gene set,
      which is what separates a real coupling from a drift in transcriptome
      quality.
 
@@ -82,7 +82,7 @@ def main():
     ln = pd.read_csv(a.lengths)
     spn = ln[ln.SOURCE.str.contains('caudate/SPN', na=False)][['CELL_BARCODE', 'DONOR', 'CAG_LENGTH']]
     st = st.merge(spn, on='CELL_BARCODE', how='inner')
-    print('striatum: %d of the matrix columns carry a measured repeat length' % len(st))
+    print('striatum: %d of the matrix columns have a measured repeat length' % len(st))
     add_hox(st)
 
     # ---- A

@@ -1,6 +1,6 @@
 """The two per-gene onset panels of the re-analysis board.
 
-Takes the per-gene onset summary as JSON on the command line; it carries a
+Takes the per-gene onset summary as JSON on the command line; it holds a
 "cand" list built by notebook 01. See data/PUT_INPUT_FILES_HERE.txt.
 
 This writes an SVG fragment, not a whole board. The fragment was pasted into

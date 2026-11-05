@@ -83,12 +83,12 @@ travelled. Across the 11 cortex donors FAN1 gives Spearman rho = −0.92, rankin
 17,516 genes put through identical standardization; holding inherited length constant it
 is −0.82, p = 0.004. The striatum shows nothing, on six donors with almost no variation
 in inherited length. `analysis/expression/README.md` has the method, the controls and
-the limits, including the reverse-causation problem a post-mortem snapshot cannot settle.
+the limits, including the reverse-causation problem a post-mortem snapshot leaves open.
 
 ### When the silencing fails — `analysis/silencing_tests.py`
 
 Four tests on the per-nucleus data, each scoring a nucleus by the repeat it
-carries rather than by the donor it came from.
+holds rather than by the donor it came from.
 
 **A.** All four HOX clusters run far above their own baseline past 200 CAGs;
 across 140–199 two of the four do. Each cluster is taken relative to its own rate
@@ -107,7 +107,8 @@ Past 200 CAGs the factors are 74, 50, 76 and 53 for HOXA to HOXD, on intervals o
 29–154, 13–103, 22–130 and 12–103. Across 140–199 they are 3.7, 2.0, 5.3 and 6.5,
 above baseline in 98%, 45%, 87% and 99% of resamples; HOXA and HOXD each draw
 transcripts from 6 of the 10 donors with nuclei in that window, HOXC from 3, and
-HOXB's 9 transcripts come from one donor, so HOXB carries no evidence there.
+HOXB's 9 transcripts come from one donor, so whatever HOXB does there remains
+unmeasured.
 Below 140 the largest movement is HOXC at 1.8 times baseline, on 11 transcripts
 from 3 donors, interval 0.0–5.2.
 
@@ -143,7 +144,7 @@ differences do.
 **D.** The two regions derepress the same genes at different repeat lengths.
 Across the 42 HOX genes present in both expression matrices — the 39 named
 HOXA to HOXD with a paralog number, plus HOXA10-AS, HOXA11-AS and HOXC13-AS —
-levels in nuclei carrying 260 copies or more correlate at rho = +0.86. (The 23
+levels in nuclei at 260 copies or more correlate at rho = +0.86. (The 23
 on board 4 is a different set: 22 numbered HOX genes plus HOXA11-AS, those being
 the ones the cortex paper's own per-gene statistics cover.) But at 140–199 CAGs the cortex sits at 5.2 times its
 own baseline (p = 3 × 10⁻⁶⁸) while the striatum sits at 0.46 — and that striatal
@@ -233,12 +234,30 @@ summary as JSON, which notebook 01 produces and which is not committed here.
 
 ## Running it
 
-Python 3.11 with `numpy`, `scipy` and `pandas`. R with `Matrix` for the
-notebooks, which were run on Colab against the Zenodo archive.
+Everything under `analysis/` and `figures/src/` is Python and runs on an
+ordinary machine:
 
 ```
+pip install -r requirements.txt
 python3 analysis/prc2_enrichment.py /path/to/input/files
 ```
+
+The matrices are the reason that holds. The cortical count matrix is a dense R
+matrix of 39,560 genes by 78,855 nuclei, 1.3 GB gzipped and around 12 GB in
+memory, so `analysis/expression/rds_stream.py` reads it column by column and
+never holds more than one column at a time.
+
+The three notebooks are the exception. They run on an R kernel rather than
+Python, install `data.table`, `Matrix` and `ggplot2` in their first cell, and
+download the 2.9 GB Zenodo archive into the session. They load each matrix whole
+with `readRDS`, so notebook 01 needs more memory than a laptop has for the
+cortical region and was run on a Colab High-RAM runtime. The caudate matrix is
+148 MB and runs anywhere.
+
+Assembling `figures/Repeat_Disease_Thresholds.html` needs Node as well as
+Python, with no Node packages. Rendering the PDF additionally needs Playwright
+with a browser (`npm install playwright && npx playwright install chromium`);
+without it `build_pdf.py` stops and prints that instruction.
 
 With no argument the scripts read from `data/`. The input files each script
 needs are listed in `data/PUT_INPUT_FILES_HERE.txt`. Two of them,

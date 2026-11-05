@@ -212,7 +212,7 @@ def panel_cortex_scatter():
     o.append(tx(1206, 340, 'length, pooled.', 13, MUT))
 
     ls, y = para(0, 456, 'The direction is the one the biology predicts: less of the enzyme that removes loops, further the repeat gets. '
-                         'What the figure cannot settle is which way the arrow runs.', 14, INK)
+                         'Which way the arrow runs is left open by a figure of this kind.', 14, INK)
     o += ls
     ls, y = para(0, y + 6, 'If the growth of the repeat, or the damage that follows it, lowers FAN1 in the neurons furthest along, the same pattern appears '
                            'with the arrow running the other way. Only material sampled before the expansion could tell the two apart.')
@@ -318,7 +318,7 @@ def bars(o, x0, label, ratio, mutsb, fan1, median_gain, col):
 def panel_two_regions():
     W, H = 1392, 772
     o = []
-    o.append(tx(0, 24, 'The striatum, where the repeats run furthest, is where FAN1 is most outnumbered — and where 6 donors cannot settle anything', 19, INK, w=600))
+    o.append(tx(0, 24, 'The striatum, where the repeats run furthest, is where FAN1 is most outnumbered — and where 6 donors leave the question open', 19, INK, w=600))
     o.append(tx(0, 46, 'Regional pseudobulk expression from the same matrices, and the same standardized correlation run on striatal projection neurons.', 14))
 
     TOP, BASE, MAX = 112, 300, 360

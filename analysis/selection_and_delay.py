@@ -1,4 +1,4 @@
-"""Why age carries no signal: in a post-mortem HD cohort, age at death is an
+"""Why age gives no signal: in a post-mortem HD cohort, age at death is an
 outcome of the expansion, not an exposure time."""
 import os, sys
 import gzip, csv, math, collections

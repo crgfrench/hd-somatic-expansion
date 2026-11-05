@@ -7,7 +7,7 @@ for. What comes out is a CSV of counts per nucleus for those genes, plus that
 nucleus's total, which is small enough to work with anywhere.
 
 The column barcodes are read from the matrix's trailing dimnames attribute.
-They are needed for the striatum, whose released summary carries fewer rows
+They are needed for the striatum, whose released summary has fewer rows
 than the matrix has columns, so nuclei there cannot be matched by position.
 """
 import argparse, numpy as np, pandas as pd

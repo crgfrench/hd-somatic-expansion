@@ -1,0 +1,14 @@
+# Python packages for everything under analysis/ and figures/src/.
+# Install with:  pip install -r requirements.txt
+#
+# The three notebooks under notebooks/ are R, not Python, and install their own
+# packages (data.table, Matrix, ggplot2) in their first cell.
+#
+# Assembling figures/Repeat_Disease_Thresholds.html also needs Node (no packages).
+# Rendering figures/Repeat_Disease_Thresholds.pdf additionally needs Playwright
+# with a browser:  npm install playwright && npx playwright install chromium
+
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+pypdf>=4.0
